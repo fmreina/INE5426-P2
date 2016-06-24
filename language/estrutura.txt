@@ -1,3 +1,4 @@
+Estrutura planejada - Sujeita a alterações no decorrer da implementação.
 
 separadores: {} () , ;
 

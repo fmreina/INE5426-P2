@@ -1,0 +1,64 @@
+
+separadores: {} () , ;
+
+inicio de programa: programa {
+fim	de programa: } <fim de programa>
+
+tipos: 
+	int, real, bool, string(tratar como lista de chars)
+
+array: 
+	int[4] nome;
+
+declaracao:
+	int variavel;
+	real var1, var2, ..., varn;
+
+decleracao de funcao:
+	void funcao();
+	int funcao(int a, real b);
+
+definicao de funcao:
+	void funcao(int a, real b){
+		<codigo>
+	}
+
+	int funcao(){
+		<codico>
+		return valorInteiro;
+	}
+
+while:
+	enquanto(<condicao>){
+		<codig>
+	}
+
+	faca{
+
+	}enquanto(<condicao>);
+
+for:
+	para(<inicio>, <limite>, <passo>){
+		<codigo>
+	}
+
+	de <valorInt> ate <valorInt>{
+
+	}
+
+if-then-else
+	se(<condicao>){
+
+	} senao {
+
+	}
+
+???
+	se(<condicao>){
+
+	} senao se(<condicao>){
+
+	}
+
+operacoes: some, subtracao, multiplicacao, divisao, maior,maior­igual, menor, menor­igual, igualdade e diferença.
+

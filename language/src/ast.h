@@ -71,7 +71,11 @@ namespace AST {
 			OPERATION::Operation op;
 			Node *left;
 			Node *right;
-			BinOp(Node *left, OPERATION::Operation op, Node *right) : left(left), op(op), right(right) { type = TYPE::getBinType(left->type, op, right->type); }
+			BinOp(Node *newLeft, OPERATION::Operation op, Node *newRight) : left(newLeft), op(op), right(newRight) {
+				std::cout<<"BinOp: left: "<<TYPE::maleName[left->type]<<std::endl;
+				std::cout<<"BinOp: right: "<<TYPE::maleName[right->type]<<std::endl;
+				type = TYPE::getBinType(left->type, op, right->type); 
+			}
 			void printTree();
 	};
 
@@ -97,7 +101,7 @@ namespace AST {
 		public:
 			std::string word;
 			TYPE::Type type;
-			Word(std::string word, TYPE::Type type) : word(word), type(type), Node(type) { }
+			Word(std::string word, TYPE::Type newType) : word(word), type(newType), Node(newType) { }
 			void printTree();
 	};
 
@@ -110,7 +114,11 @@ namespace AST {
 		public:
 			std::string value;
 			TYPE::Type type;
-			Value(std::string value, TYPE::Type type) : value(value), type(type), Node(type) { }
+			Value(std::string value, TYPE::Type newType) : value(value), type(newType), Node(newType) { 
+				// std::cout<<"value: "<<value<<std::endl;
+				// std::cout<<"type: "<<TYPE::maleName[this->type]<<std::endl;
+				// std::cout<<"newType: "<<TYPE::maleName[newType]<<std::endl;
+			}
 			void printTree();
 	};
 

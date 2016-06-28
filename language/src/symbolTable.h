@@ -32,7 +32,7 @@ namespace ST {
 			Kind kind;
 			bool initialized;
 			Symbol( TYPE::Type type, Kind kind, bool initialized ) : type(type), kind(kind), initialized(initialized) { }
-			Symbol( ) {type = TYPE::integer; kind = variable; initialized = false; }
+			Symbol( ) {type = TYPE::unknown; kind = variable; initialized = false; }
 	};
 
 	/*

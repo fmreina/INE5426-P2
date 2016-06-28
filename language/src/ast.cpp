@@ -194,20 +194,30 @@ void Word::printTree(){
 /*
  *	Method to make the coercion from integer to real when needed
  */
- Node* Node::coerce(Node* node){
- 	if(this->needCoersion(this->type, node->type)){
- 		type = TYPE::real;
+ Node* Node::coerce(Node* left){
+ 	// this is the right side
+ 	// std::cout<<"this "<<TYPE::maleName[this->type]<<std::endl;
+ 	// std::cout<<"node "<<TYPE::maleName[node->type]<<std::endl;
+ 	if(this->needCoersion(this->type, left->type)){
+ 		std::cout<<" did it! "<< std::endl;
+ 		this->type = TYPE::real;
  		return new AST::Coercion(this);
  	}
- 	type = TYPE::integer;
+
+ 	// this->type = TYPE::integer; // do not make coercion, keep the types as it is
  	return this;
  }
 
 /*
  *	check if needs to make a coercion. If this->node is integer and the other is real return true.
  */
- bool Node::needCoersion(TYPE::Type a, TYPE::Type b){
- 	return(a == TYPE::integer && b == TYPE::real);
+ bool Node::needCoersion(TYPE::Type right, TYPE::Type left){
+ 	std::cout<<"right "<<TYPE::maleName[right]<<std::endl;
+ 	std::cout<<"left "<<TYPE::maleName[left]<<std::endl;
+ 	std::cout<<"right = integer? "<<(right == TYPE::integer)<<std::endl;
+ 	std::cout<<"left = real? "<<(left == TYPE::real)<<std::endl;
+ 	std::cout<<"need it? "<<(right == TYPE::integer && left == TYPE::real)<<std::endl;
+ 	return(right == TYPE::integer && left == TYPE::real);
  }
 
 /*

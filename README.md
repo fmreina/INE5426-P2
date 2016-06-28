@@ -7,7 +7,7 @@ It will be used Flex and Bison to develop the compiler of this new language and 
 
 * After calling the make file it will create a runnable "dothething". Call ./dothething to execute. A user can type oor insert some sample code writen on this language and press ctrl + d to end the execution and see the output of the compiler processing.
 
-* The output is guiven in Portuguese.
+* The output is given in Portuguese.
 
 ####Files:
 * ast.cpp & ast.h: C++ Abstract Syntax Tree definitions and methods

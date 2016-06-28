@@ -18,6 +18,8 @@ Type TYPE::getBinType(Type left, OPERATION::Operation op, Type right){
 		// assign operation gets the type of the receiver
 		case OPERATION::assign:
 			type = left;
+			std::cout<<"left type"<<TYPE::maleName[left]<<std::endl;
+			std::cout<<"right type"<<TYPE::maleName[right]<<std::endl;
 			if(left != right) wrongTypeError(op, left, right);
 			break;
 		// numerical operations. If one is real the final type must be real

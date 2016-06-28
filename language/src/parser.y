@@ -78,7 +78,7 @@
 // %token T_END_WHILE
 // %token T_DEF_TYPE
 
-// %token T_ASSIGN
+%token T_ASSIGN
 %token T_COMMA
 %token T_COLON
 %token T_SEMICOLON
@@ -98,9 +98,9 @@
 %type <node> declaration
 %type <node> type
 %type <var> variable_list
-// %type <node> assignment
-// %type <node> expression 
-// %type <node> target
+%type <node> assignment
+%type <node> expression 
+%type <node> target
 // %type <string> size
 // %type <arr> array_list
 // %type <node> target_array
@@ -162,7 +162,7 @@ block :	line { $$ = new AST::Block(); if ($1 != NULL) $$->lines.push_back($1); }
  *	A line may be a declaration or an assignment
  */ 		
 line :	declaration T_SEMICOLON T_NEW_LINE { $$ = $1; }
-		// | assignment T_SEMICOLON T_NEW_LINE
+		| assignment T_SEMICOLON T_NEW_LINE
 		// | scope T_NEW_LINE
 		// | def_func T_NEW_LINE { $$ = $1; }
 		// | def_type T_NEW_LINE { $$ = $1; }
@@ -198,25 +198,25 @@ variable_list:	T_WORD { $$ = new AST::VariableDeclaration(TYPE::lastType);
 // /*
 //  *	creates a relation and assign a expression to a variable coming from target
 //  */
-// assignment: target T_ASSIGN expression { $$ = new AST::BinOp($1, OPERATION::assign, $3->coerce($1)); }
+assignment: target T_ASSIGN expression { $$ = new AST::BinOp($1, OPERATION::assign, $3->coerce($1)); }
 // 			| target_array T_ASSIGN expression { $$ = new AST::BinOp($1, OPERATION::assign, $3->coerce($1)); }
-// 			;
+			;
 
 // /*
 //  *	creates a new variable in the symbol table
 //  */
-// target: T_WORD { $$ = symTab.assignVariable($1); }
-		// ;
+target: T_WORD { $$ = symTab.assignVariable($1); }
+		;
 
 // /*
 //  *	decalres a expression as being a variable, or a value, or an operation between two expressions, or a minus/negation operation of an expression
 //  *	for T_WORD, it uses a variable from the symbol table
 //  *	for the values, it creates a new instance of Value givin as parameters the value received and a <TYPE::type>
 //  */
-// expression:	T_WORD { $$ = symTab.useVariable($1); }
-// 			| T_INT { $$ = new AST::Value($1, TYPE::integer); }
-// 			| T_REAL { $$ = new AST::Value($1, TYPE::real); }
-// 			| T_BOOL { $$ = new AST::Value($1, TYPE::boolean); }
+expression:	T_WORD { $$ = symTab.useVariable($1); }
+			| T_INT { $$ = new AST::Value($1, TYPE::integer); /*std::cout<<"Gramática: Inteiro "<<std::endl;*/}
+			| T_REAL { $$ = new AST::Value($1, TYPE::real); /*std::cout<<"Gramática: Real "<<std::endl;*/}
+			| T_BOOL { $$ = new AST::Value($1, TYPE::boolean); }
 // 			| expression T_PLUS expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::plus, $3->coerce($1)); }
 // 			| expression T_MINUS expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::minus, $3->coerce($1)); }
 // 			| expression T_TIMES expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::times, $3->coerce($1)); }
@@ -233,7 +233,7 @@ variable_list:	T_WORD { $$ = new AST::VariableDeclaration(TYPE::lastType);
 // 			| T_MINUS expression %prec U_NEGATIVE { $$ = new AST::UnOp(OPERATION::u_minus, $2); }
 // 			| T_OPEN_PARENTHESIS expression T_CLOSE_PARENTHESIS { $$ = $2; }	
 // 			| target_array { $$ = $1; }		
-// 			;
+			;
 
 // /*
 //  *	only sets the size for the array

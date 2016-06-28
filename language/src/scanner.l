@@ -32,6 +32,8 @@ word[a-zA-Z]+
 ":"		{ return T_COLON; }
 ";"		{ return T_SEMICOLON; } // semicolon indicates the end of the current line.
 
+"="	{ return T_ASSIGN; }
+
 "int"	{ return T_TYPE_INT; }
 "real"	{ return T_TYPE_REAL; }
 "bool"	{ return T_TYPE_BOOL; }

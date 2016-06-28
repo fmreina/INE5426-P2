@@ -1,0 +1,7 @@
+programa 
+{
+	int a, b;
+	real c, d;
+	bool e, f;
+	int[4] array;
+}

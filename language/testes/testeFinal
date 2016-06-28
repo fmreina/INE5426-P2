@@ -3,18 +3,24 @@ programa
 	int a, b;
 	real c, d;
 	bool e, f;
-	int[4] array;
+	int[4] ar;
+
 	a = 2;
 	b = 3;
 	c = 3.5;
 	d = 5.6;
 	e = TRUE;
 	f = FALSE;
-	array = {4, 7, 6, 8};
-	b = a+b;
-	b = b*2;
-	d = c+d;
-	e = e & f;
+
+	ar[0] = 3;
+	ar[1] = 4;
+	ar[2] = 5;
+	ar[3] = 6;
+
+	b = a + b;
+	b = b * 2;
+	d = c + d;
+	e = e && f;
 
 	int fatorial (int a)
 	{
@@ -23,8 +29,8 @@ programa
 	    de a ate 2
 	    {
 	    	aux = a - 1;
-			fat = fat * aux;
-			a = aux;
+		fat = fat * aux;
+		a = aux;
 	    }
 	    return fat;
 	}

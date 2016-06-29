@@ -130,7 +130,13 @@ namespace TYPE {
 	/*
 	 *	print error messages
 	 */
-	void wrongTypeError(OPERATION::Operation op, Type expected, Type guiven);
-	void wrongTypeError(OPERATION::Operation op, Type expected1, Type expected2, Type guiven);
+	// void wrongTypeError(OPERATION::Operation op, Type expected, Type guiven);
+	// void wrongTypeError(OPERATION::Operation op, Type expected1, Type expected2, Type guiven);
 }
 
+namespace ERROR{
+
+	void wrongTypeError(OPERATION::Operation op, TYPE::Type expected, TYPE::Type guiven);
+
+	void wrongTypeError(OPERATION::Operation op, TYPE::Type expected1, TYPE::Type expected2, TYPE::Type guiven);
+}

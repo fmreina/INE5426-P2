@@ -62,6 +62,23 @@ namespace AST {
 	};
 
 	/*
+	 *	@class Value to receive numerical values
+	 *	@param std::string, TYPE::Type (type is assigned to the Node)
+	 *	@method printTree  @return void
+	 */
+	class Value : public Node {
+		public:
+			std::string value;
+			TYPE::Type type;
+			Value(std::string value, TYPE::Type newType) : value(value), type(newType), Node(newType) { 
+				// std::cout<<"value: "<<value<<std::endl;
+				// std::cout<<"type: "<<TYPE::maleName[this->type]<<std::endl;
+				// std::cout<<"newType: "<<TYPE::maleName[newType]<<std::endl;
+			}
+			void printTree();
+	};
+
+	/*
 	 *	@class BinOp to work with binary operation ( +, *, =, ~=, ... )
 	 *	@param Node, OPERATION::Operation, Node
 	 *	@method printTree  @return void
@@ -71,10 +88,49 @@ namespace AST {
 			OPERATION::Operation op;
 			Node *left;
 			Node *right;
-			BinOp(Node *newLeft, OPERATION::Operation op, Node *newRight) : left(newLeft), op(op), right(newRight) {
-				std::cout<<"BinOp: left: "<<TYPE::maleName[left->type]<<std::endl;
-				std::cout<<"BinOp: right: "<<TYPE::maleName[right->type]<<std::endl;
-				type = TYPE::getBinType(left->type, op, right->type); 
+			BinOp(Node *newLeft, OPERATION::Operation op, Node *newRight) {
+				
+				if ( newLeft->type == newRight->type ){
+					this->left = newLeft;
+					this->op = op;
+					this->right = newRight;
+				} 
+				else {
+					ERROR::wrongTypeError(op, newLeft->type, newRight->type);
+					this->left = newLeft;
+					this->op = op;
+
+					/*
+					 * if left is int and right is real present an error and set left with the integer value of right
+					 */
+					if(newLeft->type == TYPE::integer && (newRight->type == TYPE::real || newRight->type == TYPE::boolean) ){
+						
+						auto val = dynamic_cast<AST::Value *>(newRight);
+						if(val){
+							if(newRight->type == TYPE::real){
+								auto cropPosition = val->value.find(".");
+								auto intValue = val->value.substr(0, cropPosition);
+								val->value = intValue;
+								val->type = TYPE::integer;
+
+								this->right = val;
+								left->printTree(); 
+								std::cout<<  " = " << intValue << std::endl;
+							}else{
+								std::cout<< "FIXME: assigning integer 0" << std::endl; // what to do in this case?
+								val->type = TYPE::integer;
+								val->value = "0";
+								this->right = val;
+							}
+						}else{
+							std::cout<< "TODO: at AST::BinOP at ast.h" << std::endl;
+							this->right = newRight;
+						}
+
+					}else{
+						this->right = newRight;
+					}
+				}
 			}
 			void printTree();
 	};
@@ -102,23 +158,6 @@ namespace AST {
 			std::string word;
 			TYPE::Type type;
 			Word(std::string word, TYPE::Type newType) : word(word), type(newType), Node(newType) { }
-			void printTree();
-	};
-
-	/*
-	 *	@class Value to receive numerical values
-	 *	@param std::string, TYPE::Type (type is assigned to the Node)
-	 *	@method printTree  @return void
-	 */
-	class Value : public Node {
-		public:
-			std::string value;
-			TYPE::Type type;
-			Value(std::string value, TYPE::Type newType) : value(value), type(newType), Node(newType) { 
-				// std::cout<<"value: "<<value<<std::endl;
-				// std::cout<<"type: "<<TYPE::maleName[this->type]<<std::endl;
-				// std::cout<<"newType: "<<TYPE::maleName[newType]<<std::endl;
-			}
 			void printTree();
 	};
 

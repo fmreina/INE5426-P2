@@ -37,6 +37,9 @@ word[a-zA-Z]+
 "int"	{ return T_TYPE_INT; }
 "real"	{ return T_TYPE_REAL; }
 "bool"	{ return T_TYPE_BOOL; }
+
+"true"	{ yylval.string = strdup(yytext); return T_BOOL; } // received as string as the objective is only printing
+"false"	{ yylval.string = strdup(yytext); return T_BOOL; } // received as string as the objective is only printing
 {digit}	{ yylval.string = strdup(yytext); return T_INT; } // received as string as the objective is only printing
 {real}	{ yylval.string = strdup(yytext); return T_REAL; } // received as string as the objective is only printing
 {word}	{ yylval.string = strdup(yytext); return T_WORD; } // received as string as the objective is only printing

@@ -103,7 +103,7 @@ namespace TYPE {
 		"inteira",
 		"real",
 		"booleana",
-		"unknown"
+		"desconhecida"
 	};
 
 	/*
@@ -112,7 +112,8 @@ namespace TYPE {
     const std::vector<std::string> maleName = {
     	"inteiro",
     	"real",
-    	"booleano"
+    	"booleano",
+    	"desconhecido"
     };
 
 	static Type lastType;
@@ -127,16 +128,15 @@ namespace TYPE {
 	 */
 	Type getUnType(Type type, OPERATION::Operation op);
 
+}
+
+namespace MESSAGES{
 	/*
 	 *	print error messages
 	 */
-	// void wrongTypeError(OPERATION::Operation op, Type expected, Type guiven);
-	// void wrongTypeError(OPERATION::Operation op, Type expected1, Type expected2, Type guiven);
-}
-
-namespace ERROR{
-
 	void wrongTypeError(OPERATION::Operation op, TYPE::Type expected, TYPE::Type guiven);
 
 	void wrongTypeError(OPERATION::Operation op, TYPE::Type expected1, TYPE::Type expected2, TYPE::Type guiven);
+
+	// void assignIntegermessage(AST::Node* left, AST::Node* right);
 }

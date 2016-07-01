@@ -89,50 +89,31 @@ namespace AST {
 			Node *left;
 			Node *right;
 			BinOp(Node *newLeft, OPERATION::Operation op, Node *newRight) {
-				
-				if ( newLeft->type == newRight->type ){
-					this->left = newLeft;
-					this->op = op;
-					this->right = newRight;
-				} 
-				else {
-					ERROR::wrongTypeError(op, newLeft->type, newRight->type);
-					this->left = newLeft;
-					this->op = op;
-
-					/*
-					 * if left is int and right is real present an error and set left with the integer value of right
-					 */
-					if(newLeft->type == TYPE::integer && (newRight->type == TYPE::real || newRight->type == TYPE::boolean) ){
-						
-						auto val = dynamic_cast<AST::Value *>(newRight);
-						if(val){
-							if(newRight->type == TYPE::real){
-								auto cropPosition = val->value.find(".");
-								auto intValue = val->value.substr(0, cropPosition);
-								val->value = intValue;
-								val->type = TYPE::integer;
-
-								this->right = val;
-								left->printTree(); 
-								std::cout<<  " = " << intValue << std::endl;
-							}else{
-								std::cout<< "FIXME: assigning integer 0" << std::endl; // what to do in this case?
-								val->type = TYPE::integer;
-								val->value = "0";
-								this->right = val;
-							}
-						}else{
-							std::cout<< "TODO: at AST::BinOP at ast.h" << std::endl;
-							this->right = newRight;
-						}
-
-					}else{
+				// std::cout<<"op "<< OPERATION::name[op]<<std::endl;
+				switch(op){
+					case OPERATION::assign:
+						assign(newLeft, op, newRight);
+					break;
+					case OPERATION::plus:
+					case OPERATION::minus:
+					case OPERATION::times:
+					case OPERATION::divide:
+						math(newLeft, op, newRight);
+					break;
+					default:
+						this->op = op;
+						this->left = newLeft;
 						this->right = newRight;
-					}
+					break;
 				}
 			}
 			void printTree();
+			void assign(Node *newLeft, OPERATION::Operation op, Node *newRight);
+			void math(Node *newLeft, OPERATION::Operation op, Node *newRight);
+			void assignValueMessage(AST::Node* left, AST::Node* right);
+			void assignIntegerPartmessage(Node* left, Node* right);
+			void coerceToInteger(Node *newLeft, Node *newRight);
+
 	};
 
 	/*

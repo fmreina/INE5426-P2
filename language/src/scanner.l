@@ -32,7 +32,9 @@ word[a-zA-Z]+
 ":"		{ return T_COLON; }
 ";"		{ return T_SEMICOLON; } // semicolon indicates the end of the current line.
 
-"="	{ return T_ASSIGN; }
+"="		{ return T_ASSIGN; }
+"+"		{ return T_PLUS; }
+"-"		{ return T_MINUS; }
 
 "int"	{ return T_TYPE_INT; }
 "real"	{ return T_TYPE_REAL; }

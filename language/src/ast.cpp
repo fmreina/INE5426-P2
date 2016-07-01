@@ -58,6 +58,9 @@ void BinOp::printTree(){
 				right->size->printTree();
 				std::cout << "}: ";
 			}
+			// if(left->type == TYPE::integer || right->type == TYPE::real){
+			// 	std::cout<<" para inteiro"<<std::endl; // FIXME: make as in the coercion from int to real
+			// }
 			break;
 		default:
 			std::cout << "(";
@@ -97,6 +100,100 @@ void BinOp::printTree(){
 	return;
 }
 
+void BinOp::math(Node *newLeft, OPERATION::Operation op, Node *newRight){
+	// std::cout<<"newLeft "; newLeft->printTree(); std::cout<<std::endl;
+ 	// std::cout<<"newRight "; newRight->printTree(); std::cout<<std::endl;
+	if(newLeft->type == TYPE::boolean) MESSAGES::wrongTypeError(op, TYPE::integer, TYPE::real, newLeft->type);
+	if(newRight->type == TYPE::boolean) MESSAGES::wrongTypeError(op, TYPE::integer, TYPE::real, newRight->type);
+	this->type = TYPE::integer;
+	if(newLeft->type == TYPE::real || newRight->type == TYPE::real){
+		this->type = TYPE::real;
+	}
+		this->left = newLeft;
+		this->op = op;
+		this->right = newRight;
+	// std::cout<<"newLeft "; newLeft->printTree(); std::cout<<std::endl;
+ 	//	std::cout<<"newRight "; newRight->printTree(); std::cout<<std::endl;
+}
+
+void BinOp::assign(Node *newLeft, OPERATION::Operation op, Node *newRight){
+	// std::cout<<"newLeft "<<TYPE::maleName[newLeft->type]<<" "; newLeft->printTree(); std::cout<<std::endl;
+ 	// std::cout<<"newRight "<<TYPE::maleName[newRight->type]<<" "; newRight->printTree(); std::cout<<std::endl;
+	/*
+	 * if left type is the same as right type, ok!
+	 */
+	if ( newLeft->type == newRight->type ){
+		this->left = newLeft;
+		this->op = op;
+		this->right = newRight;
+	} 
+	else {
+		/*
+		 * if left type is different from right type, send an error and take an action
+		 */
+		MESSAGES::wrongTypeError(op, newLeft->type, newRight->type);
+		this->left = newLeft;
+		this->op = op;
+		if(newLeft->type == TYPE::integer){ 
+			coerceToInteger(newLeft, newRight);
+		} else if (newLeft->type == TYPE::real){
+			std::cout<< " FIXME: assigning real 0.0" << std::endl; // what to do in this case?
+			this->right = new Value("0.0", TYPE::real);
+			assignValueMessage(this->left, this->right);
+		} else if (newLeft->type == TYPE::boolean){
+			std::cout<< " FIXME: assigning boolean false" << std::endl; // what to do in this case?
+			this->right = new Value("false", TYPE::boolean);
+			assignValueMessage(this->left, this->right);
+		}
+
+		// std::cout<<  " Ação: Foi atribuido o ";
+		// this->right->printTree();
+		// std::cout<<  " à ";
+		// this->left->printTree(); 
+		// std::cout<<"."<<std::endl;
+	}
+}
+
+void BinOp::assignValueMessage(Node* left, Node* right){
+	std::cout<<  " Ação: Foi atribuido o ";
+	right->printTree();
+	std::cout<<  " à ";
+	left->printTree(); 
+	std::cout<<"."<<std::endl;
+}
+
+void BinOp::assignIntegerPartmessage(Node* left, Node* right){
+	std::cout<<  " Ação: Foi atribuido a parte inteira de ";
+	right->printTree();
+	std::cout<<  " à ";
+	left->printTree(); 
+	std::cout<<"."<<std::endl;
+}
+
+void BinOp::coerceToInteger(Node *newLeft, Node *newRight){
+		auto val = dynamic_cast<AST::Value *>(newRight);
+		if(val){
+			if(newRight->type == TYPE::real){ 
+				/* from real to int */
+				auto cropPosition = val->value.find(".");
+				auto intValue = val->value.substr(0, cropPosition);
+				val->value = intValue;
+				val->type = TYPE::integer;
+
+				this->right = val;
+			}else { 
+				/* from bool to int */
+				std::cout<< " FIXME: assigning integer 0" << std::endl; // what to do in this case?
+				this->right = new Value("0", TYPE::integer);
+			}
+			assignValueMessage(this->left, this->right);
+		}else{
+			// in case it can't cast
+			// std::cout<< "Casting Error: at AST::BinOP at ast.h" << std::endl;
+			this->right = newRight;
+			this->assignIntegerPartmessage(this->left, this->right);
+		}
+	}
 /*
  *	prints the unary operation in the following format
  *	((<OPERATION::Operation> <TYPE::Type>) <Node>)
@@ -197,7 +294,11 @@ void Word::printTree(){
  Node* Node::coerce(Node* left){
  	// this is the right side
  	// std::cout<<"this "<<TYPE::maleName[this->type]<<std::endl;
- 	// std::cout<<"node "<<TYPE::maleName[node->type]<<std::endl;
+ 	// this->printTree();
+ 	// std::cout<<std::endl;
+ 	// std::cout<<"node "<<TYPE::maleName[left->type]<<std::endl;
+ 	// left->printTree();
+ 	// std::cout<<std::endl;
  	if(this->needCoersion(this->type, left->type)){
  		// std::cout<<" did it! "<< std::endl;
  		this->type = TYPE::real;

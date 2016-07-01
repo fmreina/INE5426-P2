@@ -40,8 +40,8 @@
  */
 %token T_NEW_LINE
 
-// %token T_PLUS
-// %token T_MINUS
+%token T_PLUS
+%token T_MINUS
 // %token T_TIMES
 // %token T_DIVIDE
 // %token T_GREATER
@@ -124,7 +124,7 @@
  *	The latest it is listed, the highest the precedence
  */
 %left T_DEFINITION
-// %left T_PLUS T_MINUS
+%left T_PLUS T_MINUS
 // %left T_TIMES T_DIVIDE
 // %left T_AND T_OR
 // %left T_NOT T_TRUE T_FALSE
@@ -168,57 +168,57 @@ line :	declaration T_SEMICOLON T_NEW_LINE { $$ = $1; }
 		// | def_type T_NEW_LINE { $$ = $1; }
 		;
 
-// /*
-//  *	A declaration is given by a type of variable 
-//  *	and a list of variables
-//  */
+/*
+ *	A declaration is given by a type of variable 
+ *	and a list of variables
+ */
 declaration :	type variable_list { $$ = $2; }
 // 				| type T_OPEN_BRACKETS size T_CLOSE_BRACKETS T_COLON array_list { $$ = $6; }
 // 				| T_DECL_FUNCTION type T_COLON function_list { $$ = $4; }
 				;
 
-// /*
-//  *	A type of variable may be an integer, real or boolean
-//  */
+/*
+ *	A type of variable may be an integer, real or boolean
+ */
 type :	T_TYPE_INT { TYPE::lastType = TYPE::integer; }
 		| T_TYPE_REAL { TYPE::lastType = TYPE::real; }
 		| T_TYPE_BOOL { TYPE::lastType = TYPE::boolean; }
 		;
 
-// /*
-//  *	Each list of variable can be a single word { creates a new instance of variableDeclaration and push the variable into the variable list}
-//  *	or a list of variables followed by a word { receives a new list and a variable, and push the the variable into the list }
-//  */
+/*
+ *	Each list of variable can be a single word { creates a new instance of variableDeclaration and push the variable into the variable list}
+ *	or a list of variables followed by a word { receives a new list and a variable, and push the the variable into the list }
+ */
 variable_list:	T_WORD { $$ = new AST::VariableDeclaration(TYPE::lastType);
 						 $$->variables.push_back(symTab.newVariable($1, TYPE::lastType)); }
 				| variable_list T_COMMA T_WORD { $$ = $1;
 												 $$->variables.push_back(symTab.newVariable($3, TYPE::lastType)); }
 				;
 
-// /*
-//  *	creates a relation and assign a expression to a variable coming from target
-//  */
+/*
+ *	creates a relation and assign a expression to a variable coming from target
+ */
 assignment: target T_ASSIGN expression { $$ = new AST::BinOp($1, OPERATION::assign, $3->coerce($1)); }
-// 			| target_array T_ASSIGN expression { $$ = new AST::BinOp($1, OPERATION::assign, $3->coerce($1)); }
+			// | target_array T_ASSIGN expression { $$ = new AST::BinOp($1, OPERATION::assign, $3->coerce($1)); }
 			;
 
-// /*
-//  *	creates a new variable in the symbol table
-//  */
+/*
+ *	creates a new variable in the symbol table
+ */
 target: T_WORD { $$ = symTab.assignVariable($1); }
 		;
 
-// /*
-//  *	decalres a expression as being a variable, or a value, or an operation between two expressions, or a minus/negation operation of an expression
-//  *	for T_WORD, it uses a variable from the symbol table
-//  *	for the values, it creates a new instance of Value givin as parameters the value received and a <TYPE::type>
-//  */
+/*
+ *	decalres a expression as being a variable, or a value, or an operation between two expressions, or a minus/negation operation of an expression
+ *	for T_WORD, it uses a variable from the symbol table
+ *	for the values, it creates a new instance of Value givin as parameters the value received and a <TYPE::type>
+ */
 expression:	T_WORD { $$ = symTab.useVariable($1); }
 			| T_INT { $$ = new AST::Value($1, TYPE::integer); /*std::cout<<"Gramática: Inteiro "<<std::endl;*/}
 			| T_REAL { $$ = new AST::Value($1, TYPE::real); /*std::cout<<"Gramática: Real "<<std::endl;*/}
 			| T_BOOL { $$ = new AST::Value($1, TYPE::boolean); }
-// 			| expression T_PLUS expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::plus, $3->coerce($1)); }
-// 			| expression T_MINUS expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::minus, $3->coerce($1)); }
+			| expression T_PLUS expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::plus, $3->coerce($1)); }
+			| expression T_MINUS expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::minus, $3->coerce($1)); }
 // 			| expression T_TIMES expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::times, $3->coerce($1)); }
 // 			| expression T_DIVIDE expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::divide, $3->coerce($1)); }
 // 			| expression T_GREATER expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::greater, $3->coerce($1)); }

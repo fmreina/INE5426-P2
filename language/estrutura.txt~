@@ -61,7 +61,5 @@ if-then-else
 
 	}
 
-operacoes: some(+), subtracao(-), multiplicacao(*), divisao(/), 
-maior(>), maior­igual(>=), menor(<), menor­igual(<=), 
-igualdade(==), diferença(!=), and lógico(&&) e ou lógico(||).
+operacoes: some, subtracao, multiplicacao, divisao, maior,maior­igual, menor, menor­igual, igualdade(==) e diferença(!=).
 

@@ -161,11 +161,11 @@ block :	line { $$ = new AST::Block(); if ($1 != NULL) $$->lines.push_back($1); }
  */ 		
 line :	declaration T_SEMICOLON T_NEW_LINE { $$ = $1; }
 		| assignment T_SEMICOLON T_NEW_LINE
-		| line T_NEW_LINE {}
+		| line T_NEW_LINE 
 		// | scope T_NEW_LINE
 		// | def_func T_NEW_LINE { $$ = $1; }
 		// | def_type T_NEW_LINE { $$ = $1; }
-		|expression T_NEW_LINE // only for testing
+		|expression T_SEMICOLON T_NEW_LINE // only for testing
 		// | declaration T_ASSIGN expression T_SEMICOLON T_NEW_LINE { new AST::BinOp($1, OPERATION::assign, $3->coerce($1)); $$ = $1; }
 		;
 

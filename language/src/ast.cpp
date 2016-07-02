@@ -181,6 +181,7 @@ void BinOp::validateAndAssign(Node *newLeft, OPERATION::Operation op, Node *newR
 		}
 	}
 }
+
 void BinOp::coerceToInteger(Node *newLeft, Node *newRight){
 	auto val = dynamic_cast<AST::Value *>(newRight);
 	if(val){

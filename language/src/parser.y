@@ -24,7 +24,7 @@
 	AST::Node *node;
 	AST::Block *block;
 	AST::VariableDeclaration *var;
-	// AST::ArrayDeclaration *arr;
+	AST::ArrayDeclaration *arr;
 	// AST::FunctionDeclaration *fun;
 	// AST::IfBlock *ifBlock;
 	// AST::WhileBlock *whileBlock;
@@ -82,8 +82,8 @@
 %token T_SEMICOLON
 %token T_OPEN_PARENTHESIS
 %token T_CLOSE_PARENTHESIS
-// %token T_OPEN_BRACKETS
-// %token T_CLOSE_BRACKETS
+%token T_OPEN_BRACKETS
+%token T_CLOSE_BRACKETS
 
 /* 
  *	type defines the type of our nonterminal symbols.
@@ -99,9 +99,9 @@
 %type <node> assignment
 %type <node> expression 
 %type <node> target
-// %type <string> size
-// %type <arr> array_list
-// %type <node> target_array
+%type <string> size
+%type <arr> array_list
+%type <node> target_array
 // %type <fun> function_list
 // %type <func_def> def_func
 // %type <node> parameters
@@ -174,7 +174,7 @@ line :	declaration T_SEMICOLON T_NEW_LINE { $$ = $1; }
  *	and a list of variables
  */
 declaration :	type variable_list { $$ = $2; }
-// 				| type T_OPEN_BRACKETS size T_CLOSE_BRACKETS T_COLON array_list { $$ = $6; }
+				| type T_OPEN_BRACKETS size T_CLOSE_BRACKETS array_list { $$ = $5; }
 // 				| T_DECL_FUNCTION type T_COLON function_list { $$ = $4; }
 				;
 
@@ -191,9 +191,10 @@ type :	T_TYPE_INT { TYPE::lastType = TYPE::integer; }
  *	or a list of variables followed by a word { receives a new list and a variable, and push the the variable into the list }
  */
 variable_list:	T_WORD { $$ = new AST::VariableDeclaration(TYPE::lastType);
-						 $$->variables.push_back(symTab.newVariable($1, TYPE::lastType)); }
+						 $$->variables.push_back(symTab.newVariable($1, TYPE::lastType, KIND::variable, "0"));
+						}
 				| variable_list T_COMMA T_WORD { $$ = $1;
-												 $$->variables.push_back(symTab.newVariable($3, TYPE::lastType)); }
+												 $$->variables.push_back(symTab.newVariable($3, TYPE::lastType, KIND::variable, "0")); }
 				;
 
 /*
@@ -205,7 +206,7 @@ assignment: target T_ASSIGN expression {
 										// $3->printTree();
 										// std::cout<<"\n  Gram:Assignment: "<< TYPE::maleName[$3->type] <<std::endl;
 										$$ = new AST::BinOp($1, OPERATION::assign, $3->coerce($1)); }
-			// | target_array T_ASSIGN expression { $$ = new AST::BinOp($1, OPERATION::assign, $3->coerce($1)); }
+			| target_array T_ASSIGN expression { $$ = new AST::BinOp($1, OPERATION::assign, $3->coerce($1)); }
 			;
 
 /*
@@ -242,29 +243,31 @@ expression:	T_WORD { $$ = symTab.useVariable($1); }
 								 $$->type = $2->type;
 								}
 			| T_OPEN_PARENTHESIS expression T_CLOSE_PARENTHESIS { $$ = $2; }	
-// 			| target_array { $$ = $1; }		
+			| target_array { $$ = $1; }		
 			;
 
-// /*
-//  *	only sets the size for the array
-//  */
-// size: T_INT {  Array::lastSize = $1; }
-// 	  ;
+/*
+ *	only sets the size for the array
+ */
+size: T_INT {  Array::lastSize = $1; }
+	  ;
 
-
-//  *	the array variable can be only one variable or a list of variables
+/*
+ *	the array variable can be only one variable or a list of variables 
+ */
  
-// array_list: T_WORD { $$ = new AST::ArrayDeclaration(TYPE::lastType, Array::lastSize);
-// 					 $$->variables.push_back(symTab.newVariable($1, TYPE::lastType)); }
-// 			| array_list T_COMMA T_WORD { $$ = $1;
-// 			 							  $$->variables.push_back(symTab.newVariable($3, TYPE::lastType)); }
-// 			;
+array_list: T_WORD { $$ = new AST::ArrayDeclaration(TYPE::lastType, Array::lastSize);
+					 $$->variables.push_back(symTab.newVariable($1, TYPE::lastType, KIND::array, Array::lastSize));
+					}
+			| array_list T_COMMA T_WORD { $$ = $1;
+			 							  $$->variables.push_back(symTab.newVariable($3, TYPE::lastType, KIND::array, Array::lastSize)); }
+			;
 
-// /*
-//  *	target_array gets the array and the position to be assigned
-//  */
-// target_array: T_WORD T_OPEN_BRACKETS expression T_CLOSE_BRACKETS { $$ = symTab.assignVariable($1); $$->size = $3; }
-// 			 ;
+/*
+ *	target_array gets the array and the position to be assigned
+ */
+target_array: T_WORD T_OPEN_BRACKETS expression T_CLOSE_BRACKETS { $$ = symTab.assignVariable($1, TYPE::lastType); $$->size = $3; }
+			 ;
 
 // /*
 //  *	list the function declaration, similar as it is done with the variable declaration

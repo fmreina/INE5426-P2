@@ -118,6 +118,44 @@ void BinOp::assign(Node *newLeft, OPERATION::Operation op, Node *newRight){
 	/*
 	 * if left type is the same as right type, ok!
 	 */
+	 auto arr = dynamic_cast<AST::Word *>(newLeft);
+	if(arr->kind == KIND::array){
+		auto position = dynamic_cast<Value*>(arr->size);
+		if(position){
+			// cout<<"Position: "<< position->value <<endl;	
+			// cout<<"Lengh: "<< arr->lengh <<endl;
+			int pos = std::stoi(position->value);
+			int lengh = std::stoi(arr->lengh);
+			// cout<<"Position: "<< pos <<endl;	
+			// cout<<"Lengh: "<< lengh <<endl;
+			if(pos <= lengh-1){
+				BinOp::validateAndAssign(newLeft, op, newRight);
+			} else {
+				//FIXME: how to avoid segmentation fault if do not set the values?
+				//index out of bounds
+				// std::cout<<"ERROR: Index out of bounds." << std::endl;
+				MESSAGES::indexOutOfBounds(pos, lengh-1);
+				this->left = newLeft;
+				this->op = op;
+				// this->right = new Value("0", newRight->type);
+				this->right = newRight;
+			}
+		} else {
+			// std::cout<<"ERROR at ast.cpp on method BinOp::assign. Cannot cast to Value*." << std::endl;
+			// TODO: send the value when doing SymbolTable::assignVariable and get it back here to set as index of the array
+			// auto word = dynamic_cast<Word*>(arr->size);
+			// auto symbol = symTab.entryList[word->word];
+			// cout<<"symbol:value = "<< word->word << ":" << symbol.value;
+			//FIXME: it does not control if the index is in the bounds of the array
+			BinOp::validateAndAssign(newLeft, op, newRight);
+		}
+	}
+	else{
+		BinOp::validateAndAssign(newLeft, op, newRight);
+	}
+}
+
+void BinOp::validateAndAssign(Node *newLeft, OPERATION::Operation op, Node *newRight){
 	if ( newLeft->type == newRight->type ){
 		this->left = newLeft;
 		this->op = op;
@@ -143,7 +181,6 @@ void BinOp::assign(Node *newLeft, OPERATION::Operation op, Node *newRight){
 		}
 	}
 }
-
 void BinOp::coerceToInteger(Node *newLeft, Node *newRight){
 	auto val = dynamic_cast<AST::Value *>(newRight);
 	if(val){

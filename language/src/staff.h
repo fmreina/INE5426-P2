@@ -129,3 +129,12 @@ namespace TYPE {
 	Type getUnType(Type type, OPERATION::Operation op);
 
 }
+
+namespace KIND{
+	
+	enum Kind { 
+		variable,
+		array,
+		unknown
+	};
+}

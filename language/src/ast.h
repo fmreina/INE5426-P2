@@ -46,6 +46,7 @@ namespace AST {
 			bool isComplex = false;
 			// ParamList params;
 			NodeList paramList;
+			KIND::Kind kind;
 	};
 
 	/*
@@ -109,6 +110,7 @@ namespace AST {
 			}
 			void printTree();
 			void assign(Node *newLeft, OPERATION::Operation op, Node *newRight);
+			void validateAndAssign(Node *newLeft, OPERATION::Operation op, Node *newRight);
 			void math(Node *newLeft, OPERATION::Operation op, Node *newRight);
 			void coerceToInteger(Node *newLeft, Node *newRight);
 
@@ -144,7 +146,10 @@ namespace AST {
 		public:
 			std::string word;
 			TYPE::Type type;
-			Word(std::string word, TYPE::Type newType) : word(word), type(newType), Node(newType) { }
+			KIND::Kind kind;
+			std::string lengh;
+			Word(std::string word, TYPE::Type newType, KIND::Kind newKind, std::string newLengh) 
+				: word(word), type(newType), kind(newKind), Node(newType), lengh(newLengh) { }
 			void printTree();
 	};
 
@@ -158,7 +163,7 @@ namespace AST {
 	 	public:
 	 		TYPE::Type type;
 	 		NodeList variables;
-	 		VariableDeclaration (TYPE::Type type) : type(type), Node(type) {
+	 		VariableDeclaration (TYPE::Type type) : type(type), Node(type){
 	 			// std::cout<< "declaravar" <<std::endl;
 	 			// std::cout<< "tipo "<< type <<std::endl;
 	 		}

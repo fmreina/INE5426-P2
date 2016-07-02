@@ -62,6 +62,23 @@ namespace AST {
 	};
 
 	/*
+	 *	@class Value to receive numerical values
+	 *	@param std::string, TYPE::Type (type is assigned to the Node)
+	 *	@method printTree  @return void
+	 */
+	class Value : public Node {
+		public:
+			std::string value;
+			TYPE::Type type;
+			Value(std::string value, TYPE::Type newType) : value(value), type(newType), Node(newType) { 
+				// std::cout<<"value: "<<value<<std::endl;
+				// std::cout<<"type: "<<TYPE::maleName[this->type]<<std::endl;
+				// std::cout<<"newType: "<<TYPE::maleName[newType]<<std::endl;
+			}
+			void printTree();
+	};
+
+	/*
 	 *	@class BinOp to work with binary operation ( +, *, =, ~=, ... )
 	 *	@param Node, OPERATION::Operation, Node
 	 *	@method printTree  @return void
@@ -71,8 +88,30 @@ namespace AST {
 			OPERATION::Operation op;
 			Node *left;
 			Node *right;
-			BinOp(Node *left, OPERATION::Operation op, Node *right) : left(left), op(op), right(right) { type = TYPE::getBinType(left->type, op, right->type); }
+			BinOp(Node *newLeft, OPERATION::Operation op, Node *newRight) {
+				// std::cout<<"op "<< OPERATION::name[op]<<std::endl;
+				switch(op){
+					case OPERATION::assign:
+						assign(newLeft, op, newRight);
+					break;
+					case OPERATION::plus:
+					case OPERATION::minus:
+					case OPERATION::times:
+					case OPERATION::divide:
+						math(newLeft, op, newRight);
+					break;
+					default:
+						this->op = op;
+						this->left = newLeft;
+						this->right = newRight;
+					break;
+				}
+			}
 			void printTree();
+			void assign(Node *newLeft, OPERATION::Operation op, Node *newRight);
+			void math(Node *newLeft, OPERATION::Operation op, Node *newRight);
+			void coerceToInteger(Node *newLeft, Node *newRight);
+
 	};
 
 	/*
@@ -84,7 +123,11 @@ namespace AST {
 		public:
 			OPERATION::Operation op;
 			Node *node;
-			UnOp(OPERATION::Operation op, Node *node) : node(node), op(op) { TYPE::getUnType(node->type, op); }
+			UnOp(OPERATION::Operation newOp, Node* newNode) : node(newNode), op(newOp) { 
+				checkType(newNode->type, newOp);
+				// TYPE::getUnType(node->type, op); 
+			}
+			void checkType(TYPE::Type type, OPERATION::Operation op);
 			void printTree();
 	};
 
@@ -97,20 +140,7 @@ namespace AST {
 		public:
 			std::string word;
 			TYPE::Type type;
-			Word(std::string word, TYPE::Type type) : word(word), type(type), Node(type) { }
-			void printTree();
-	};
-
-	/*
-	 *	@class Value to receive numerical values
-	 *	@param std::string, TYPE::Type (type is assigned to the Node)
-	 *	@method printTree  @return void
-	 */
-	class Value : public Node {
-		public:
-			std::string value;
-			TYPE::Type type;
-			Value(std::string value, TYPE::Type type) : value(value), type(type), Node(type) { }
+			Word(std::string word, TYPE::Type newType) : word(word), type(newType), Node(newType) { }
 			void printTree();
 	};
 
@@ -124,7 +154,10 @@ namespace AST {
 	 	public:
 	 		TYPE::Type type;
 	 		NodeList variables;
-	 		VariableDeclaration (TYPE::Type type) : type(type), Node(type) { }
+	 		VariableDeclaration (TYPE::Type type) : type(type), Node(type) {
+	 			// std::cout<< "declaravar" <<std::endl;
+	 			// std::cout<< "tipo "<< type <<std::endl;
+	 		}
 	 		void printTree();
 	 };
 

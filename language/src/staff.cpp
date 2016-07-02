@@ -4,6 +4,7 @@
  *	 - llpilla/compiler_examples/allen (github)
  */
 #include "staff.h"
+#include "message.h"
 
 extern void yyerror(const char* s, ...);
 
@@ -78,20 +79,3 @@ Type TYPE::getUnType(Type type, OPERATION::Operation op){
 	}
 	return final;
 }
-
-/*
- *	print error messages
- */
-void MESSAGES::wrongTypeError(OPERATION::Operation op, TYPE::Type expected, TYPE::Type given){
-	yyerror("semântico: operacão %s espera %s mas recebeu %s.\n", OPERATION::name[op].c_str(), maleName[expected].c_str(), maleName[given].c_str());
-	return;
-}
-
-void MESSAGES::wrongTypeError(OPERATION::Operation op, TYPE::Type expected1, TYPE::Type expected2, TYPE::Type given){
-	yyerror("semântico: operacão %s espera %s ou %s mas recebeu %s.\n", OPERATION::name[op].c_str(), maleName[expected1].c_str(), maleName[expected2].c_str(), maleName[given].c_str());
-	return;
-}
-
-// void MESSAGES::assignIntegermessage(AST::Node* left, AST::Node* right){
-
-// }

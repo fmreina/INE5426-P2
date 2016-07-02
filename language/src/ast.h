@@ -110,8 +110,6 @@ namespace AST {
 			void printTree();
 			void assign(Node *newLeft, OPERATION::Operation op, Node *newRight);
 			void math(Node *newLeft, OPERATION::Operation op, Node *newRight);
-			void assignValueMessage(AST::Node* left, AST::Node* right);
-			void assignIntegerPartmessage(Node* left, Node* right);
 			void coerceToInteger(Node *newLeft, Node *newRight);
 
 	};
@@ -125,7 +123,11 @@ namespace AST {
 		public:
 			OPERATION::Operation op;
 			Node *node;
-			UnOp(OPERATION::Operation op, Node *node) : node(node), op(op) { TYPE::getUnType(node->type, op); }
+			UnOp(OPERATION::Operation newOp, Node* newNode) : node(newNode), op(newOp) { 
+				checkType(newNode->type, newOp);
+				// TYPE::getUnType(node->type, op); 
+			}
+			void checkType(TYPE::Type type, OPERATION::Operation op);
 			void printTree();
 	};
 
@@ -152,7 +154,10 @@ namespace AST {
 	 	public:
 	 		TYPE::Type type;
 	 		NodeList variables;
-	 		VariableDeclaration (TYPE::Type type) : type(type), Node(type) { }
+	 		VariableDeclaration (TYPE::Type type) : type(type), Node(type) {
+	 			// std::cout<< "declaravar" <<std::endl;
+	 			// std::cout<< "tipo "<< type <<std::endl;
+	 		}
 	 		void printTree();
 	 };
 

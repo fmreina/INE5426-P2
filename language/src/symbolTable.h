@@ -31,7 +31,9 @@ namespace ST {
 			TYPE::Type type;
 			Kind kind;
 			bool initialized;
-			Symbol( TYPE::Type type, Kind kind, bool initialized ) : type(type), kind(kind), initialized(initialized) { }
+			Symbol( TYPE::Type newType, Kind newKind, bool init ) : type(newType), kind(newKind), initialized(init) { 
+					// std::cout << "symbol: "<<newType<<endl;
+					}
 			Symbol( ) {type = TYPE::unknown; kind = variable; initialized = false; }
 	};
 
@@ -51,7 +53,7 @@ namespace ST {
 			bool checkId( std::string id ) { return entryList.find(id) != entryList.end(); } // @return true if variable was defined
 			void addSymbol(std::string id, Symbol newSymbol) { entryList[id] = newSymbol; }
 			AST::Node* newVariable( std::string id, TYPE::Type type);
-			AST::Node* assignVariable(std::string id);
+			AST::Node* assignVariable(std::string id, TYPE::Type type);
 			AST::Node* useVariable(std::string id);
 	};
 }

@@ -31,10 +31,22 @@ word[a-zA-Z]+
 ","		{ return T_COMMA; }
 ":"		{ return T_COLON; }
 ";"		{ return T_SEMICOLON; } // semicolon indicates the end of the current line.
+"("		{ return T_OPEN_PARENTHESIS; }
+")"		{ return T_CLOSE_PARENTHESIS; }
 
 "="		{ return T_ASSIGN; }
 "+"		{ return T_PLUS; }
 "-"		{ return T_MINUS; }
+"*"		{ return T_TIMES; }
+"/"     { return T_DIVIDE; }
+">"		{ return T_GREATER; }
+">="	{ return T_GREATER_EQUALS; }	
+"<"		{ return T_SMALLER; }	
+"<="	{ return T_SMALLER_EQUALS; }	
+"=="		{ return T_EQUALS; }	
+"!="	{ return T_DIFFERENT; }	
+"&&"	{ return T_AND; }	
+"||"	{ return T_OR; }	
 
 "int"	{ return T_TYPE_INT; }
 "real"	{ return T_TYPE_REAL; }

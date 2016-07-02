@@ -42,19 +42,17 @@
 
 %token T_PLUS
 %token T_MINUS
-// %token T_TIMES
-// %token T_DIVIDE
-// %token T_GREATER
-// %token T_GREATER_EQUALS	
-// %token T_SMALLER
-// %token T_SMALLER_EQUALS	
-// %token T_EQUALS	
-// %token T_DIFFERENT	
+%token T_TIMES
+%token T_DIVIDE
+%token T_GREATER
+%token T_GREATER_EQUALS	
+%token T_SMALLER
+%token T_SMALLER_EQUALS	
+%token T_EQUALS	
+%token T_DIFFERENT	
 // %token T_NOT	
-// %token T_TRUE	
-// %token T_FALSE	
-// %token T_AND	
-// %token T_OR	
+%token T_AND	
+%token T_OR	
 
 %token <string> T_INT
 %token <string> T_REAL
@@ -82,8 +80,8 @@
 %token T_COMMA
 %token T_COLON
 %token T_SEMICOLON
-// %token T_OPEN_PARENTHESIS
-// %token T_CLOSE_PARENTHESIS
+%token T_OPEN_PARENTHESIS
+%token T_CLOSE_PARENTHESIS
 // %token T_OPEN_BRACKETS
 // %token T_CLOSE_BRACKETS
 
@@ -125,13 +123,13 @@
  */
 %left T_DEFINITION
 %left T_PLUS T_MINUS
-// %left T_TIMES T_DIVIDE
-// %left T_AND T_OR
-// %left T_NOT T_TRUE T_FALSE
-// %left T_GREATER T_GREATER_EQUALS T_SMALLER T_SMALLER_EQUALS T_EQUALS T_DIFFERENT
-// %left T_CLOSE_PARENTHESIS
-// %left T_OPEN_PARENTHESIS
-// %right U_NEGATIVE
+%left T_TIMES T_DIVIDE
+%left T_AND T_OR
+// %left T_NOT
+%left T_GREATER T_GREATER_EQUALS T_SMALLER T_SMALLER_EQUALS T_EQUALS T_DIFFERENT
+%left T_CLOSE_PARENTHESIS
+%left T_OPEN_PARENTHESIS
+%right U_NEGATIVE
 %nonassoc error
  
 /*
@@ -163,9 +161,12 @@ block :	line { $$ = new AST::Block(); if ($1 != NULL) $$->lines.push_back($1); }
  */ 		
 line :	declaration T_SEMICOLON T_NEW_LINE { $$ = $1; }
 		| assignment T_SEMICOLON T_NEW_LINE
+		| line T_NEW_LINE {}
 		// | scope T_NEW_LINE
 		// | def_func T_NEW_LINE { $$ = $1; }
 		// | def_type T_NEW_LINE { $$ = $1; }
+		|expression T_NEW_LINE // only for testing
+		// | declaration T_ASSIGN expression T_SEMICOLON T_NEW_LINE { new AST::BinOp($1, OPERATION::assign, $3->coerce($1)); $$ = $1; }
 		;
 
 /*
@@ -205,7 +206,7 @@ assignment: target T_ASSIGN expression { $$ = new AST::BinOp($1, OPERATION::assi
 /*
  *	creates a new variable in the symbol table
  */
-target: T_WORD { $$ = symTab.assignVariable($1); }
+target: T_WORD { $$ = symTab.assignVariable($1, TYPE::lastType); }
 		;
 
 /*
@@ -214,24 +215,24 @@ target: T_WORD { $$ = symTab.assignVariable($1); }
  *	for the values, it creates a new instance of Value givin as parameters the value received and a <TYPE::type>
  */
 expression:	T_WORD { $$ = symTab.useVariable($1); }
-			| T_INT { $$ = new AST::Value($1, TYPE::integer); /*std::cout<<"Gramática: Inteiro "<<std::endl;*/}
-			| T_REAL { $$ = new AST::Value($1, TYPE::real); /*std::cout<<"Gramática: Real "<<std::endl;*/}
+			| T_INT { $$ = new AST::Value($1, TYPE::integer); }
+			| T_REAL { $$ = new AST::Value($1, TYPE::real); }
 			| T_BOOL { $$ = new AST::Value($1, TYPE::boolean); }
 			| expression T_PLUS expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::plus, $3->coerce($1)); }
 			| expression T_MINUS expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::minus, $3->coerce($1)); }
-// 			| expression T_TIMES expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::times, $3->coerce($1)); }
-// 			| expression T_DIVIDE expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::divide, $3->coerce($1)); }
-// 			| expression T_GREATER expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::greater, $3->coerce($1)); }
-// 			| expression T_GREATER_EQUALS expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::greater_equals, $3->coerce($1)); }
-// 			| expression T_SMALLER expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::smaller, $3->coerce($1)); }
-// 			| expression T_SMALLER_EQUALS expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::smaller_equals, $3->coerce($1)); }
-// 			| expression T_EQUALS expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::equals, $3->coerce($1)); }
-// 			| expression T_DIFFERENT expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::different, $3->coerce($1)); }
-// 			| expression T_AND expression { $$ = new AST::BinOp($1, OPERATION::and_op, $3); }
-// 			| expression T_OR expression { $$ = new AST::BinOp($1, OPERATION::or_op, $3); }
+			| expression T_TIMES expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::times, $3->coerce($1)); }
+			| expression T_DIVIDE expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::divide, $3->coerce($1)); }
+			/*FIXME*/| T_MINUS expression %prec U_NEGATIVE { $$ = new AST::UnOp(OPERATION::u_minus, $2); }
+			| expression T_GREATER expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::greater, $3->coerce($1)); }
+			| expression T_GREATER_EQUALS expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::greater_equals, $3->coerce($1)); }
+			| expression T_SMALLER expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::smaller, $3->coerce($1)); }
+			| expression T_SMALLER_EQUALS expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::smaller_equals, $3->coerce($1)); }
+			| expression T_EQUALS expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::equals, $3->coerce($1)); }
+			| expression T_DIFFERENT expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::different, $3->coerce($1)); }
+			| expression T_AND expression { $$ = new AST::BinOp($1, OPERATION::and_op, $3); }
+			| expression T_OR expression { $$ = new AST::BinOp($1, OPERATION::or_op, $3); }
 // 			| T_NOT expression { $$ = new AST::UnOp(OPERATION::not_op, $2); }
-// 			| T_MINUS expression %prec U_NEGATIVE { $$ = new AST::UnOp(OPERATION::u_minus, $2); }
-// 			| T_OPEN_PARENTHESIS expression T_CLOSE_PARENTHESIS { $$ = $2; }	
+			| T_OPEN_PARENTHESIS expression T_CLOSE_PARENTHESIS { $$ = $2; }	
 // 			| target_array { $$ = $1; }		
 			;
 

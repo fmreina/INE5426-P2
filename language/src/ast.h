@@ -123,7 +123,11 @@ namespace AST {
 		public:
 			OPERATION::Operation op;
 			Node *node;
-			UnOp(OPERATION::Operation newOp, Node* newNode) : node(newNode), op(newOp) { 
+			TYPE::Type type;
+			UnOp(OPERATION::Operation newOp, Node* newNode) : node(newNode), op(newOp), type(newNode->type) {
+				// std::cout<<"  Unop:Type: "<< TYPE::maleName[this->type] <<std::endl;
+				// std::cout<<"  UnOp:NodeType: "<< TYPE::maleName[this->node->type] <<std::endl;
+				// std::cout<<"  Unop:Op: "<< OPERATION::name[this->op] <<std::endl;
 				checkType(newNode->type, newOp);
 				// TYPE::getUnType(node->type, op); 
 			}

@@ -218,10 +218,13 @@ void UnOp::printTree(){
 }
 
 void UnOp::checkType(TYPE::Type type, OPERATION::Operation op){
-	// std::cout << type <<endl;
+	// std::cout<<"\n  Unop:checkType:Type: "<< TYPE::maleName[type] <<std::endl;
 	switch(op){
 		case OPERATION::u_minus:
-			if(type != TYPE::integer && type != TYPE::real) MESSAGES::wrongTypeError(op, TYPE::integer, TYPE::real, type);
+			if(type != TYPE::integer && type != TYPE::real){ 
+				MESSAGES::wrongTypeError(op, TYPE::integer, TYPE::real, type);}
+			else {
+				this->node->type = type;}
 			break;
 		case OPERATION::not_op:
 			if(type != TYPE::boolean) MESSAGES::wrongTypeError(op, TYPE::boolean, type);

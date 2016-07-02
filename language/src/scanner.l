@@ -43,10 +43,11 @@ word[a-zA-Z]+
 ">="	{ return T_GREATER_EQUALS; }	
 "<"		{ return T_SMALLER; }	
 "<="	{ return T_SMALLER_EQUALS; }	
-"=="		{ return T_EQUALS; }	
+"=="	{ return T_EQUALS; }	
 "!="	{ return T_DIFFERENT; }	
 "&&"	{ return T_AND; }	
-"||"	{ return T_OR; }	
+"||"	{ return T_OR; }
+"!"		{ return T_NOT; }	
 
 "int"	{ return T_TYPE_INT; }
 "real"	{ return T_TYPE_REAL; }

@@ -50,7 +50,7 @@
 %token T_SMALLER_EQUALS	
 %token T_EQUALS	
 %token T_DIFFERENT	
-// %token T_NOT	
+%token T_NOT	
 %token T_AND	
 %token T_OR	
 
@@ -125,7 +125,7 @@
 %left T_PLUS T_MINUS
 %left T_TIMES T_DIVIDE
 %left T_AND T_OR
-// %left T_NOT
+%left T_NOT
 %left T_GREATER T_GREATER_EQUALS T_SMALLER T_SMALLER_EQUALS T_EQUALS T_DIFFERENT
 %left T_CLOSE_PARENTHESIS
 %left T_OPEN_PARENTHESIS
@@ -199,7 +199,12 @@ variable_list:	T_WORD { $$ = new AST::VariableDeclaration(TYPE::lastType);
 /*
  *	creates a relation and assign a expression to a variable coming from target
  */
-assignment: target T_ASSIGN expression { $$ = new AST::BinOp($1, OPERATION::assign, $3->coerce($1)); }
+assignment: target T_ASSIGN expression { 
+										// $1->printTree();
+										// std::cout<<"\n  Gram:Assignment: "<< TYPE::maleName[$1->type] <<std::endl;
+										// $3->printTree();
+										// std::cout<<"\n  Gram:Assignment: "<< TYPE::maleName[$3->type] <<std::endl;
+										$$ = new AST::BinOp($1, OPERATION::assign, $3->coerce($1)); }
 			// | target_array T_ASSIGN expression { $$ = new AST::BinOp($1, OPERATION::assign, $3->coerce($1)); }
 			;
 
@@ -222,7 +227,9 @@ expression:	T_WORD { $$ = symTab.useVariable($1); }
 			| expression T_MINUS expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::minus, $3->coerce($1)); }
 			| expression T_TIMES expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::times, $3->coerce($1)); }
 			| expression T_DIVIDE expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::divide, $3->coerce($1)); }
-			/*FIXME*/| T_MINUS expression %prec U_NEGATIVE { $$ = new AST::UnOp(OPERATION::u_minus, $2); }
+			| T_MINUS expression %prec U_NEGATIVE { $$ = new AST::UnOp(OPERATION::u_minus, $2); 
+															 $$->type = $2->type;
+															}
 			| expression T_GREATER expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::greater, $3->coerce($1)); }
 			| expression T_GREATER_EQUALS expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::greater_equals, $3->coerce($1)); }
 			| expression T_SMALLER expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::smaller, $3->coerce($1)); }
@@ -231,7 +238,9 @@ expression:	T_WORD { $$ = symTab.useVariable($1); }
 			| expression T_DIFFERENT expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::different, $3->coerce($1)); }
 			| expression T_AND expression { $$ = new AST::BinOp($1, OPERATION::and_op, $3); }
 			| expression T_OR expression { $$ = new AST::BinOp($1, OPERATION::or_op, $3); }
-// 			| T_NOT expression { $$ = new AST::UnOp(OPERATION::not_op, $2); }
+			| T_NOT expression { $$ = new AST::UnOp(OPERATION::not_op, $2);
+								 $$->type = $2->type;
+								}
 			| T_OPEN_PARENTHESIS expression T_CLOSE_PARENTHESIS { $$ = $2; }	
 // 			| target_array { $$ = $1; }		
 			;

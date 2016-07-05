@@ -159,7 +159,11 @@ block :	line { $$ = new AST::Block(); if ($1 != NULL) $$->lines.push_back($1); }
 /*
  *	A line may be a declaration or an assignment
  */ 		
-line :	declaration T_SEMICOLON T_NEW_LINE { $$ = $1; }
+line :	declaration T_SEMICOLON T_NEW_LINE { $$ = $1; 
+												// for(auto it = symTab.entryList.cbegin(); it != symTab.entryList.cend(); ++it){
+												// 	std::cout << "Gram:line:symbol: " << it->first << " " << TYPE::maleName[it->second.type]<<endl;
+												// }
+											}
 		| assignment T_SEMICOLON T_NEW_LINE
 		| line T_NEW_LINE 
 		// | scope T_NEW_LINE
@@ -190,10 +194,14 @@ type :	T_TYPE_INT { TYPE::lastType = TYPE::integer; }
  *	Each list of variable can be a single word { creates a new instance of variableDeclaration and push the variable into the variable list}
  *	or a list of variables followed by a word { receives a new list and a variable, and push the the variable into the list }
  */
-variable_list:	T_WORD { $$ = new AST::VariableDeclaration(TYPE::lastType);
+variable_list:	T_WORD { 
+						 // cout<<"  Gram:variable_list:lastType "<<TYPE::maleName[TYPE::lastType]<<endl;
+						 $$ = new AST::VariableDeclaration(TYPE::lastType);
+						 // cout<<"  Gram:variable_list:lastType "<<TYPE::maleName[TYPE::lastType]<<endl;
 						 $$->variables.push_back(symTab.newVariable($1, TYPE::lastType, KIND::variable, "0"));
 						}
 				| variable_list T_COMMA T_WORD { $$ = $1;
+												 // cout<<"  parse:variable_list:lastType "<<TYPE::maleName[TYPE::lastType]<<endl;
 												 $$->variables.push_back(symTab.newVariable($3, TYPE::lastType, KIND::variable, "0")); }
 				;
 

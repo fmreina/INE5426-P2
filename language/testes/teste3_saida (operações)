@@ -1,0 +1,18 @@
+OBS!!: corrigir erro da linha 15
+Line 15: error: 
+ - semântico: operacão atribuicao espera booleano mas recebeu desconhecido.
+ Ação: Foi atribuido o valor booleano false à variável e.
+
+Declaracão de variável inteira: a, b
+Declaracão de variável real: c, d
+Declaracão de variável booleana: e, f
+Atribuicão de valor para variável a: valor inteiro 2
+Atribuicão de valor para variável b: valor inteiro 3
+Atribuicão de valor para variável c: valor real 3.5
+Atribuicão de valor para variável d: valor real 5.6
+Atribuicão de valor para variável e: valor booleano true
+Atribuicão de valor para variável f: valor booleano false
+Atribuicão de valor para variável b: (variável a (soma inteira) variável b)
+Atribuicão de valor para variável b: (variável b (multiplicacao inteira) valor inteiro 2)
+Atribuicão de valor para variável d: (variável c (subtracao real) variável d)
+Atribuicão de valor para variável e: valor booleano false

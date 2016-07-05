@@ -7,11 +7,12 @@
  */
 #include <iostream>
 #include "ast.h"
-
+extern int yydebug;
 extern AST::Block* programRoot; // set on bison file
 extern int yyparse();
 
 int main (int argc, char **argv){
+	yydebug = 0;
 	yyparse();					// parses the data
 	programRoot->printTree();	// prints the AST
 	return 0;

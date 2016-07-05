@@ -35,11 +35,11 @@ AST::Node* SymbolTable::assignVariable( std::string id, TYPE::Type type ){
 	// TYPE::Type type;
 	if( !checkId(id) ) yyerror("Variável ainda não foi definida! %s\n", id.c_str());
 	else{
-		// type = entryList[id].type;
+		type = entryList[id].type;
 		entryList[id].initialized = true;
 		KIND::Kind kind = entryList[id].kind;
 		std::string lengh = entryList[id].lengh;
-		entryList[id].value = "valueOf("+id+")"; // TODO: to complete: receive the value and set to the symbol
+		// entryList[id].value = "valueOf("+id+")"; // TODO: to complete: receive the value and set to the symbol
 		// return new AST::Word( id, type, kind);
 		AST::Node* node = new AST::Word( id, type, kind, lengh );
 		node->kind = kind;

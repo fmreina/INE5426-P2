@@ -1,4 +1,15 @@
+Line 5: error: 
+ - semântico: operacão atribuicao espera inteiro mas recebeu real.
+ Ação: Foi atribuido o valor inteiro 3 à variável b.
+Line 9: error: 
+ - semântico: operacão atribuicao espera booleano mas recebeu inteiro.
+ Ação: Foi atribuido o valor booleano false à variável f.
 Declaracão de variável inteira: a, b
 Declaracão de variável real: c, d
 Declaracão de variável booleana: e, f
-Declaracão de arranjo inteiro de tamanho 4: array
+Atribuicão de valor para variável a: valor inteiro 2
+Atribuicão de valor para variável b: valor inteiro 3
+Atribuicão de valor para variável c: valor inteiro 7 para real
+Atribuicão de valor para variável d: valor real 5.6
+Atribuicão de valor para variável e: valor booleano true
+Atribuicão de valor para variável f: valor booleano false

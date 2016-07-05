@@ -33,6 +33,8 @@ word[a-zA-Z]+
 ";"		{ return T_SEMICOLON; } // semicolon indicates the end of the current line.
 "("		{ return T_OPEN_PARENTHESIS; }
 ")"		{ return T_CLOSE_PARENTHESIS; }
+"["		{ return T_OPEN_BRACKETS; }
+"]"		{ return T_CLOSE_BRACKETS; }
 
 "="		{ return T_ASSIGN; }
 "+"		{ return T_PLUS; }
@@ -43,10 +45,11 @@ word[a-zA-Z]+
 ">="	{ return T_GREATER_EQUALS; }	
 "<"		{ return T_SMALLER; }	
 "<="	{ return T_SMALLER_EQUALS; }	
-"=="		{ return T_EQUALS; }	
+"=="	{ return T_EQUALS; }	
 "!="	{ return T_DIFFERENT; }	
 "&&"	{ return T_AND; }	
-"||"	{ return T_OR; }	
+"||"	{ return T_OR; }
+"!"		{ return T_NOT; }	
 
 "int"	{ return T_TYPE_INT; }
 "real"	{ return T_TYPE_REAL; }

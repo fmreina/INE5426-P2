@@ -15,15 +15,17 @@ extern SymbolTable symTab;
  *	adds a new symbol in the symbolTable
  *	returns a new node
  */
-AST::Node* SymbolTable::newVariable( std::string id, TYPE::Type type){
-	// std::cout<<"new variable: "<<type<<std::endl;
+AST::Node* SymbolTable::newVariable( std::string id, TYPE::Type type, KIND::Kind kind, std::string lengh){
 	if( checkId(id) ) yyerror("Redefinicão de variável! %s\n", id.c_str());
 	else {
-		Symbol entry(type, variable, false); 
+		Symbol entry(type, kind, lengh, false); 
 		addSymbol( id, entry );
 	}
 
-	return new AST::Word( id, type );
+	AST::Node* node = new AST::Word( id, type, kind, lengh );
+	node->kind = kind;
+	return node;
+	// return new AST::Word( id, type, kind );
 }
 
 /*
@@ -33,9 +35,15 @@ AST::Node* SymbolTable::assignVariable( std::string id, TYPE::Type type ){
 	// TYPE::Type type;
 	if( !checkId(id) ) yyerror("Variável ainda não foi definida! %s\n", id.c_str());
 	else{
-		// type = entryList[id].type;
+		type = entryList[id].type;
 		entryList[id].initialized = true;
-		return new AST::Word( id, type);
+		KIND::Kind kind = entryList[id].kind;
+		std::string lengh = entryList[id].lengh;
+		// entryList[id].value = "valueOf("+id+")"; // TODO: to complete: receive the value and set to the symbol
+		// return new AST::Word( id, type, kind);
+		AST::Node* node = new AST::Word( id, type, kind, lengh );
+		node->kind = kind;
+		return node;
 	}
 	return 0;
 }
@@ -49,10 +57,15 @@ AST::Node* SymbolTable::useVariable( std::string id ){
 	if( !checkId(id) ) yyerror("Variável ainda não foi definida! %s\n", id.c_str());
 	else{
 		TYPE::Type type = entryList[id].type;
+		KIND::Kind kind = entryList[id].kind;
+		std::string lengh = entryList[id].lengh;
+		// std::cout<<"use variable: "<<std::endl;
+		// std::cout<<"use variable: "<<kind<<std::endl;
 		if( !entryList[id].initialized ) yyerror("Variável ainda não foi inicializada! %s\n", id.c_str());
-		// std::cout<<"useVariable "<< id << " : " << type <<std::endl;
-		// std::cout<<"entrylist.type: "<<entryList[id].type<<endl;
-		return new AST::Word( id, type );
+		// return new AST::Word( id, type, kind );
+		AST::Node* node = new AST::Word( id, type, kind, lengh );
+		node->kind = kind;
+		return node;
 	}
 	return 0;
 }

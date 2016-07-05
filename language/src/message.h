@@ -21,4 +21,6 @@ namespace MESSAGES{
 
 	void assignIntegerPartMessage(AST::Node* left, AST::Node* right);
 
+	void indexOutOfBounds(int position, int lengh);
+
 }

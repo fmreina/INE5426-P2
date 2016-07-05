@@ -24,7 +24,7 @@
 	AST::Node *node;
 	AST::Block *block;
 	AST::VariableDeclaration *var;
-	// AST::ArrayDeclaration *arr;
+	AST::ArrayDeclaration *arr;
 	// AST::FunctionDeclaration *fun;
 	// AST::IfBlock *ifBlock;
 	// AST::WhileBlock *whileBlock;
@@ -50,7 +50,7 @@
 %token T_SMALLER_EQUALS	
 %token T_EQUALS	
 %token T_DIFFERENT	
-// %token T_NOT	
+%token T_NOT	
 %token T_AND	
 %token T_OR	
 
@@ -82,8 +82,8 @@
 %token T_SEMICOLON
 %token T_OPEN_PARENTHESIS
 %token T_CLOSE_PARENTHESIS
-// %token T_OPEN_BRACKETS
-// %token T_CLOSE_BRACKETS
+%token T_OPEN_BRACKETS
+%token T_CLOSE_BRACKETS
 
 /* 
  *	type defines the type of our nonterminal symbols.
@@ -99,9 +99,9 @@
 %type <node> assignment
 %type <node> expression 
 %type <node> target
-// %type <string> size
-// %type <arr> array_list
-// %type <node> target_array
+%type <string> size
+%type <arr> array_list
+%type <node> target_array
 // %type <fun> function_list
 // %type <func_def> def_func
 // %type <node> parameters
@@ -125,7 +125,7 @@
 %left T_PLUS T_MINUS
 %left T_TIMES T_DIVIDE
 %left T_AND T_OR
-// %left T_NOT
+%left T_NOT
 %left T_GREATER T_GREATER_EQUALS T_SMALLER T_SMALLER_EQUALS T_EQUALS T_DIFFERENT
 %left T_CLOSE_PARENTHESIS
 %left T_OPEN_PARENTHESIS
@@ -159,13 +159,17 @@ block :	line { $$ = new AST::Block(); if ($1 != NULL) $$->lines.push_back($1); }
 /*
  *	A line may be a declaration or an assignment
  */ 		
-line :	declaration T_SEMICOLON T_NEW_LINE { $$ = $1; }
+line :	declaration T_SEMICOLON T_NEW_LINE { $$ = $1; 
+												// for(auto it = symTab.entryList.cbegin(); it != symTab.entryList.cend(); ++it){
+												// 	std::cout << "Gram:line:symbol: " << it->first << " " << TYPE::maleName[it->second.type]<<endl;
+												// }
+											}
 		| assignment T_SEMICOLON T_NEW_LINE
-		| line T_NEW_LINE {}
+		| line T_NEW_LINE 
 		// | scope T_NEW_LINE
 		// | def_func T_NEW_LINE { $$ = $1; }
 		// | def_type T_NEW_LINE { $$ = $1; }
-		|expression T_NEW_LINE // only for testing
+		|expression T_SEMICOLON T_NEW_LINE // only for testing
 		// | declaration T_ASSIGN expression T_SEMICOLON T_NEW_LINE { new AST::BinOp($1, OPERATION::assign, $3->coerce($1)); $$ = $1; }
 		;
 
@@ -174,7 +178,7 @@ line :	declaration T_SEMICOLON T_NEW_LINE { $$ = $1; }
  *	and a list of variables
  */
 declaration :	type variable_list { $$ = $2; }
-// 				| type T_OPEN_BRACKETS size T_CLOSE_BRACKETS T_COLON array_list { $$ = $6; }
+				| type T_OPEN_BRACKETS size T_CLOSE_BRACKETS array_list { $$ = $5; }
 // 				| T_DECL_FUNCTION type T_COLON function_list { $$ = $4; }
 				;
 
@@ -190,17 +194,27 @@ type :	T_TYPE_INT { TYPE::lastType = TYPE::integer; }
  *	Each list of variable can be a single word { creates a new instance of variableDeclaration and push the variable into the variable list}
  *	or a list of variables followed by a word { receives a new list and a variable, and push the the variable into the list }
  */
-variable_list:	T_WORD { $$ = new AST::VariableDeclaration(TYPE::lastType);
-						 $$->variables.push_back(symTab.newVariable($1, TYPE::lastType)); }
+variable_list:	T_WORD { 
+						 // cout<<"  Gram:variable_list:lastType "<<TYPE::maleName[TYPE::lastType]<<endl;
+						 $$ = new AST::VariableDeclaration(TYPE::lastType);
+						 // cout<<"  Gram:variable_list:lastType "<<TYPE::maleName[TYPE::lastType]<<endl;
+						 $$->variables.push_back(symTab.newVariable($1, TYPE::lastType, KIND::variable, "0"));
+						}
 				| variable_list T_COMMA T_WORD { $$ = $1;
-												 $$->variables.push_back(symTab.newVariable($3, TYPE::lastType)); }
+												 // cout<<"  parse:variable_list:lastType "<<TYPE::maleName[TYPE::lastType]<<endl;
+												 $$->variables.push_back(symTab.newVariable($3, TYPE::lastType, KIND::variable, "0")); }
 				;
 
 /*
  *	creates a relation and assign a expression to a variable coming from target
  */
-assignment: target T_ASSIGN expression { $$ = new AST::BinOp($1, OPERATION::assign, $3->coerce($1)); }
-			// | target_array T_ASSIGN expression { $$ = new AST::BinOp($1, OPERATION::assign, $3->coerce($1)); }
+assignment: target T_ASSIGN expression { 
+										// $1->printTree();
+										// std::cout<<"\n  Gram:Assignment: "<< TYPE::maleName[$1->type] <<std::endl;
+										// $3->printTree();
+										// std::cout<<"\n  Gram:Assignment: "<< TYPE::maleName[$3->type] <<std::endl;
+										$$ = new AST::BinOp($1, OPERATION::assign, $3->coerce($1)); }
+			| target_array T_ASSIGN expression { $$ = new AST::BinOp($1, OPERATION::assign, $3->coerce($1)); }
 			;
 
 /*
@@ -222,7 +236,9 @@ expression:	T_WORD { $$ = symTab.useVariable($1); }
 			| expression T_MINUS expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::minus, $3->coerce($1)); }
 			| expression T_TIMES expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::times, $3->coerce($1)); }
 			| expression T_DIVIDE expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::divide, $3->coerce($1)); }
-			/*FIXME*/| T_MINUS expression %prec U_NEGATIVE { $$ = new AST::UnOp(OPERATION::u_minus, $2); }
+			| T_MINUS expression %prec U_NEGATIVE { $$ = new AST::UnOp(OPERATION::u_minus, $2); 
+															 $$->type = $2->type;
+															}
 			| expression T_GREATER expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::greater, $3->coerce($1)); }
 			| expression T_GREATER_EQUALS expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::greater_equals, $3->coerce($1)); }
 			| expression T_SMALLER expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::smaller, $3->coerce($1)); }
@@ -231,31 +247,35 @@ expression:	T_WORD { $$ = symTab.useVariable($1); }
 			| expression T_DIFFERENT expression { $$ = new AST::BinOp($1->coerce($3), OPERATION::different, $3->coerce($1)); }
 			| expression T_AND expression { $$ = new AST::BinOp($1, OPERATION::and_op, $3); }
 			| expression T_OR expression { $$ = new AST::BinOp($1, OPERATION::or_op, $3); }
-// 			| T_NOT expression { $$ = new AST::UnOp(OPERATION::not_op, $2); }
+			| T_NOT expression { $$ = new AST::UnOp(OPERATION::not_op, $2);
+								 $$->type = $2->type;
+								}
 			| T_OPEN_PARENTHESIS expression T_CLOSE_PARENTHESIS { $$ = $2; }	
-// 			| target_array { $$ = $1; }		
+			| target_array { $$ = $1; }		
 			;
 
-// /*
-//  *	only sets the size for the array
-//  */
-// size: T_INT {  Array::lastSize = $1; }
-// 	  ;
+/*
+ *	only sets the size for the array
+ */
+size: T_INT {  Array::lastSize = $1; }
+	  ;
 
-
-//  *	the array variable can be only one variable or a list of variables
+/*
+ *	the array variable can be only one variable or a list of variables 
+ */
  
-// array_list: T_WORD { $$ = new AST::ArrayDeclaration(TYPE::lastType, Array::lastSize);
-// 					 $$->variables.push_back(symTab.newVariable($1, TYPE::lastType)); }
-// 			| array_list T_COMMA T_WORD { $$ = $1;
-// 			 							  $$->variables.push_back(symTab.newVariable($3, TYPE::lastType)); }
-// 			;
+array_list: T_WORD { $$ = new AST::ArrayDeclaration(TYPE::lastType, Array::lastSize);
+					 $$->variables.push_back(symTab.newVariable($1, TYPE::lastType, KIND::array, Array::lastSize));
+					}
+			| array_list T_COMMA T_WORD { $$ = $1;
+			 							  $$->variables.push_back(symTab.newVariable($3, TYPE::lastType, KIND::array, Array::lastSize)); }
+			;
 
-// /*
-//  *	target_array gets the array and the position to be assigned
-//  */
-// target_array: T_WORD T_OPEN_BRACKETS expression T_CLOSE_BRACKETS { $$ = symTab.assignVariable($1); $$->size = $3; }
-// 			 ;
+/*
+ *	target_array gets the array and the position to be assigned
+ */
+target_array: T_WORD T_OPEN_BRACKETS expression T_CLOSE_BRACKETS { $$ = symTab.assignVariable($1, TYPE::lastType); $$->size = $3; }
+			 ;
 
 // /*
 //  *	list the function declaration, similar as it is done with the variable declaration

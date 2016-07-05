@@ -32,3 +32,7 @@ using namespace TYPE;
 		left->printTree(); 
 		std::cout<<"."<<std::endl;
 	}
+
+	void MESSAGES::indexOutOfBounds(int position, int lengh){
+		yyerror("\n - Posicão válida. tentou acessar %d, mas o tamanho do array é %d.\n", position, lengh);
+	}

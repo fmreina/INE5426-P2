@@ -46,6 +46,7 @@ namespace AST {
 			bool isComplex = false;
 			// ParamList params;
 			NodeList paramList;
+			KIND::Kind kind;
 	};
 
 	/*
@@ -109,6 +110,7 @@ namespace AST {
 			}
 			void printTree();
 			void assign(Node *newLeft, OPERATION::Operation op, Node *newRight);
+			void validateAndAssign(Node *newLeft, OPERATION::Operation op, Node *newRight);
 			void math(Node *newLeft, OPERATION::Operation op, Node *newRight);
 			void coerceToInteger(Node *newLeft, Node *newRight);
 
@@ -123,7 +125,11 @@ namespace AST {
 		public:
 			OPERATION::Operation op;
 			Node *node;
-			UnOp(OPERATION::Operation newOp, Node* newNode) : node(newNode), op(newOp) { 
+			TYPE::Type type;
+			UnOp(OPERATION::Operation newOp, Node* newNode) : node(newNode), op(newOp), type(newNode->type) {
+				// std::cout<<"  Unop:Type: "<< TYPE::maleName[this->type] <<std::endl;
+				// std::cout<<"  UnOp:NodeType: "<< TYPE::maleName[this->node->type] <<std::endl;
+				// std::cout<<"  Unop:Op: "<< OPERATION::name[this->op] <<std::endl;
 				checkType(newNode->type, newOp);
 				// TYPE::getUnType(node->type, op); 
 			}
@@ -140,7 +146,10 @@ namespace AST {
 		public:
 			std::string word;
 			TYPE::Type type;
-			Word(std::string word, TYPE::Type newType) : word(word), type(newType), Node(newType) { }
+			KIND::Kind kind;
+			std::string lengh;
+			Word(std::string word, TYPE::Type newType, KIND::Kind newKind, std::string newLengh) 
+				: word(word), type(newType), kind(newKind), Node(newType), lengh(newLengh) { }
 			void printTree();
 	};
 
@@ -154,7 +163,7 @@ namespace AST {
 	 	public:
 	 		TYPE::Type type;
 	 		NodeList variables;
-	 		VariableDeclaration (TYPE::Type type) : type(type), Node(type) {
+	 		VariableDeclaration (TYPE::Type type) : type(type), Node(type){
 	 			// std::cout<< "declaravar" <<std::endl;
 	 			// std::cout<< "tipo "<< type <<std::endl;
 	 		}

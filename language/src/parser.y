@@ -7,7 +7,8 @@
 	
 	AST::Block* programRoot; /* root node of program AST */
 	ST::SymbolTable symTab; /* global symbol table -  this is visible in the global scope */
-	ST::SymbolTable symTabLocal;
+	ST::SymbolTable symTabAux;
+	ST::SymbolTable symTabHist;
 
 	extern int yylex();
 	extern void yyerror(const char* s, ...);
@@ -119,6 +120,8 @@
 // %type <func_return> return
 // %type <type_body> type_body
 // %type <type_def> def_type
+%type <node> new_scope;
+%type <node> end_scope;
  
 /*
  *	Operator precedence for mathematical operators
@@ -286,9 +289,47 @@ target_array: T_WORD T_OPEN_BRACKETS expression T_CLOSE_BRACKETS { $$ = symTab.a
 /*
  *	declaration of scope
  */
-scope: while_scope { $$ = $1; }
+scope: /*while_scope{ $$ = $1; }*/
+		new_scope while_scope end_scope{ $$ = $1; }
 	 | if_scope { $$ = $1; }
 	 ;
+
+new_scope: {symTabAux.entryList = symTab.entryList;
+				std::cout << "Aux: "<<endl; 
+				for(auto it = symTabAux.entryList.cbegin(); it != symTabAux.entryList.cend(); ++it){
+					std::cout << it->first << ":" << it->second.value<<endl;
+				}
+
+				// ST::SymbolTable clear;
+			// symTab = clear;//new ST::SymbolTable();
+				symTabHist.entryList.insert(symTab.entryList.begin(), symTab.entryList.end() );
+				symTab.entryList.clear();
+				std::cout << "List:clear: "<<endl; 
+				for(auto it = symTab.entryList.cbegin(); it != symTab.entryList.cend(); ++it){
+					std::cout << it->first << ":" << it->second.value<<endl;
+				}
+		};
+
+end_scope: { cout<< "endScope" <<endl;
+				std::cout << "List:new: "<<endl; 
+				for(auto it = symTab.entryList.cbegin(); it != symTab.entryList.cend(); ++it){
+					std::cout << it->first << ":" << it->second.value<<endl;
+				}
+			symTabHist.entryList.insert(symTab.entryList.begin(), symTab.entryList.end());
+			symTab.entryList = symTabAux.entryList;
+			// ST::SymbolTable clear;
+			symTabAux.entryList.clear();
+				std::cout << "List:restored: "<<endl; 
+				for(auto it = symTab.entryList.cbegin(); it != symTab.entryList.cend(); ++it){
+					std::cout << it->first << ":" << it->second.value<<endl;
+				}
+
+			symTab.entryList = symTabHist.entryList;
+			std::cout << "List:hist: "<<endl; 
+				for(auto it = symTab.entryList.cbegin(); it != symTab.entryList.cend(); ++it){
+					std::cout << it->first << ":" << it->second.value<<endl;
+				}
+};
 
 /*
  *	declaration of while scope (loop)

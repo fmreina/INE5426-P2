@@ -35,6 +35,8 @@ word[a-zA-Z]+
 ")"		{ return T_CLOSE_PARENTHESIS; }
 "["		{ return T_OPEN_BRACKETS; }
 "]"		{ return T_CLOSE_BRACKETS; }
+"{"		{ return T_OPEN_BRACES;}
+"}"		{ return T_CLOSE_BRACES;}
 
 "="		{ return T_ASSIGN; }
 "+"		{ return T_PLUS; }
@@ -54,6 +56,12 @@ word[a-zA-Z]+
 "int"	{ return T_TYPE_INT; }
 "real"	{ return T_TYPE_REAL; }
 "bool"	{ return T_TYPE_BOOL; }
+"enquanto"	{ return T_WHILE; }
+"se"	{ return T_IF; }
+"entao"	{ return T_THEN; }
+"senao"	{ return T_ELSE; }
+"de"	{ return T_FROM; }
+"ate"	{ return T_UNTIL; }
 
 "true"	{ yylval.string = strdup(yytext); return T_BOOL; } // received as string as the objective is only printing
 "false"	{ yylval.string = strdup(yytext); return T_BOOL; } // received as string as the objective is only printing

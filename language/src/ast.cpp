@@ -517,16 +517,21 @@ void TypeDef::printTree(){
 	std::cout<<"\nFim definicao";
 }
 
-/*
- *	print the components of the scope of the compound type
- */
-void TypeBody::printTree(){
-	for( auto var = lines.begin(); var != lines.end(); var ++){
- 		std::cout<<"Componente ";
- 		(*var)->isParam = true;
- 		(*var)->printTree();
- 		(*var)->isParam = false;
- 		if(next(var) != lines.end())
- 			std::cout << "\n";
- 	}
+void FromTil_Block::printTree(){
+	if(error){
+		std::cout<< "Ocorreu erro na declaracão e a estrutura \"de <inteiro> ate <inteiro>\" não foi computada.";
+	}else {
+		std::cout<<"Laco"<<endl;
+		std::cout<<"+de ";
+		fromExpr->printTree();
+		std::cout<<" até ";
+		tilExpr->printTree();
+		std::cout<<endl;
+		std::cout<<"+faca: ";
+		std::cout<<endl;
+		for (Node* line: lines) {
+			line->printTree();
+		}
+		std::cout<<"Fim laco";
+	}
 }

@@ -1,0 +1,10 @@
+int a;
+a = 2;
+enquanto (a<9) {
+	a = a + 1;
+}
+
+faca {
+	a = a - 1;
+} enquanto (a>3);
+

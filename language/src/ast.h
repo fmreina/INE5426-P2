@@ -11,6 +11,7 @@
 #include <vector>
 #include "staff.h"
 
+
 using namespace std;
 
 extern void yyerrer(const char *s, ...);
@@ -44,6 +45,7 @@ namespace AST {
 			bool isParam = false;
 			bool isDef = false;
 			bool isComplex = false;
+			bool error = false;
 			// ParamList params;
 			NodeList paramList;
 			KIND::Kind kind;
@@ -317,15 +319,25 @@ namespace AST {
 			void printTree();
 	};
 
-	/*
-	 *	@class TypeBody to work with a function block structure
-	 *	@attribute NodeList (list of lines)
-	 *	@method printTree  @return void
-	 */
-	class TypeBody : public Node {
+	class FromTil_Block : public Node {
 		public:
 			NodeList lines;
-			TypeBody() { }
+			Node* fromExpr;
+			Node* tilExpr;
+			FromTil_Block(Node* fromExpr, Node* tilExpr) : fromExpr(fromExpr), tilExpr(tilExpr) {
+				if(fromExpr->type != TYPE::integer){
+					error = true;
+					std::cout<<"Erro:\n - semântico: o valor de ";
+					fromExpr->printTree();
+					std::cout<<" deve ser do tipo "<< TYPE::maleName[TYPE::integer]<< ", mas recebeu "<< TYPE::maleName[fromExpr->type]<< "." <<endl;
+				}
+				if(tilExpr->type != TYPE::integer){
+					error = true;
+					std::cout<<"Erro:\n - semântico: o valor de ";
+					tilExpr->printTree();
+					std::cout<<" deve ser do tipo "<< TYPE::maleName[TYPE::integer]<< ", mas recebeu "<< TYPE::maleName[tilExpr->type]<< "." <<endl;
+				}
+			}
 			void printTree();
 	};
 }

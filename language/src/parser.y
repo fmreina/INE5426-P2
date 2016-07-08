@@ -27,9 +27,10 @@
 	AST::ArrayDeclaration *arr;
 	AST::WhileBlock *whileBlock;
 	AST::IfBlock *ifBlock;
+	AST::FromTil_Block *fromtilBlock;
 	AST::FunctionDeclaration *fun;
 	AST::FunctionDefinition *func_def;
-	AST::FunctionReturn *func_return;
+	// AST::FunctionReturn *func_return;
 	AST::FunctionBody *body;
 }
 
@@ -66,6 +67,8 @@
 %token T_IF
 %token T_THEN
 %token T_ELSE
+%token T_FROM
+%token T_UNTIL
 %token T_DEF_FUNCTION
 %token T_DECL_FUNCTION
 %token T_RETURN
@@ -102,6 +105,7 @@
 %type <node> scope
 %type <whileBlock> while_scope
 %type <ifBlock> if_scope
+%type <fromtilBlock> from_scope
 %type <fun> funct
 %type <node> parameters
 %type <body> body
@@ -109,7 +113,7 @@
 %type <var> variable_param
 %type <arr> array_param
 %type <func_def> def_func
-%type <func_return> return
+// %type <func_return> return
  
 /*
  *	Operator precedence for mathematical operators
@@ -278,6 +282,7 @@ target_array: T_WORD T_OPEN_BRACKETS expression T_CLOSE_BRACKETS { $$ = symTab.a
  */
 scope: while_scope { $$ = $1; }
 	 | if_scope { $$ = $1; }
+	 | from_scope { $$ = $1; }
 	 ;
 
 /*
@@ -287,6 +292,19 @@ while_scope: T_WHILE T_OPEN_PARENTHESIS expression T_CLOSE_PARENTHESIS new_line 
 					 { $$ = new AST::WhileBlock($3); 
 					   if($8 != NULL) $$->lines.push_back($8); }
 			;
+			
+
+/*
+ *	declaration of from-until scope (loop)
+ */
+from_scope: T_FROM expression T_UNTIL expression new_line T_OPEN_BRACES new_line block T_CLOSE_BRACES
+			{ $$ = new AST::FromTil_Block($2, $4);
+			  if($8 != NULL) $$->lines.push_back($8);
+			}
+		  | T_FROM expression T_UNTIL expression new_line T_OPEN_BRACES new_line T_CLOSE_BRACES
+			{ $$ = new AST::FromTil_Block($2, $4);
+			}
+		  ;
 
 /*
  *	declaration of if scope (conditional)
@@ -338,7 +356,7 @@ body: { $$ = NULL; }
 	// 		 }
 	;
 
-return: T_RETURN expression T_SEMICOLON new_line { $$ = new AST::FunctionReturn($2); };
+// return: T_RETURN expression T_SEMICOLON new_line { $$ = new AST::FunctionReturn($2); };
 
 // func_body: new_line {}
 // 		 | block new_line return new_line { $$ = new AST::FunctionBody(); $$->lines.push_back($1); $$->lines.push_back($3);}

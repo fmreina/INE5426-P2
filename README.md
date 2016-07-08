@@ -18,7 +18,6 @@ It will be used Flex and Bison to develop the compiler of this new language and 
 
 ####References:
 - All the work makes reference to the following
-* [llpilla](https://github.com/llpilla/compiler_examples/tree/master/allen) - Allen @github
 
 * [fmreina](https://github.com/fmreina/INE5426-P1) - Project 1 @github
 
@@ -26,4 +25,6 @@ It will be used Flex and Bison to develop the compiler of this new language and 
 
 * Levine, John - **Flex & Bison - Unix text processing tools** - 2009 O'Reilly Media
 
-* [Debugging Lex, Yacc, etc.](http://www.cs.man.ac.uk/~pjj/cs212/debug.html)
+* [C Plus Plus] (http://www.cplusplus.com/)
+
+* [CPP Reference](http://en.cppreference.com/)

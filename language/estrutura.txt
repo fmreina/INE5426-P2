@@ -2,8 +2,8 @@ Estrutura planejada - Sujeita a alterações no decorrer da implementação.
 
 separadores: {} () , ;
 
-inicio de programa: programa {
-fim	de programa: } <fim de programa>
+/*inicio de programa: programa {
+fim	de programa: } <fim de programa>*/
 
 tipos: 
 	int, real, bool, string(tratar como lista de chars)
@@ -33,10 +33,6 @@ while:
 	enquanto(<condicao>){
 		<codig>
 	}
-
-	faca{
-
-	}enquanto(<condicao>);
 
 for:
 	para(<inicio>, <limite>, <passo>){

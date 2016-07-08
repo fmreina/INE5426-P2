@@ -413,7 +413,22 @@ bool Node::needCoersion(TYPE::Type right, TYPE::Type left){
  */
  void FunctionDefinition::printTree(){
  	std::cout << "Definicão de funcão " << TYPE::femaleName[type] << ": ";
- 	signature->printTree();
+ 	// signature->printTree();
+ 	for( auto var = funcs.begin(); var != funcs.end(); var ++){
+ 		std::cout << dynamic_cast<Word *>(*var)->word;
+ 		if(next(var) != funcs.end())
+ 			std::cout << ", ";
+ 	}
+ 	std::cout << "\n+parametros:"<<endl;
+ 	for( auto var = params.begin(); var != params.end(); var ++){
+ 		// std::cout << "parametro ";
+ 		(*var)->isParam = true;
+ 		(*var)->printTree();
+ 		(*var)->isParam = false;
+ 		if(next(var) != params.end())
+ 			std::cout << "\n";
+ 	}
+ 	//
 
  	std::cout << "\n+corpo:"<<endl;
  	for( auto var = lines.begin(); var != lines.end(); var ++){

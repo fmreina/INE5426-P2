@@ -239,8 +239,11 @@ namespace AST {
 	 	public:
 	 		TYPE::Type type;
 	 		NodeList lines;
+	 		NodeList funcs;
+	 		ParamList params;
+
 	 		Node *signature;
-	 		FunctionDefinition (TYPE::Type type, Node *signature) : type(type), signature(signature) { }
+	 		FunctionDefinition (TYPE::Type type/*, Node *signature*/) : type(type), Node(type)/*, signature(signature)*/ { }
 	 		void printTree();
 	 };
 

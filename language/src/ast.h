@@ -325,6 +325,15 @@ namespace AST {
 			TypeBody() { }
 			void printTree();
 	};
+
+	class FromTil_Block : public Node {
+		public:
+			NodeList lines;
+			Node* fromExpr;
+			Node* tilExpr;
+			FromTil_Block(Node* fromExpr, Node* tilExpr) : fromExpr(fromExpr), tilExpr(tilExpr) { }
+			void printTree();
+	};
 }
 
 namespace Array{

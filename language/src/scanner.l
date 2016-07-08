@@ -60,6 +60,8 @@ word[a-zA-Z]+
 "se"	{ return T_IF; }
 "entao"	{ return T_THEN; }
 "senao"	{ return T_ELSE; }
+"de"	{ return T_FROM; }
+"ate"	{ return T_UNTIL; }
 
 "true"	{ yylval.string = strdup(yytext); return T_BOOL; } // received as string as the objective is only printing
 "false"	{ yylval.string = strdup(yytext); return T_BOOL; } // received as string as the objective is only printing

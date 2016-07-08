@@ -530,3 +530,18 @@ void TypeBody::printTree(){
  			std::cout << "\n";
  	}
 }
+
+void FromTil_Block::printTree(){
+	std::cout<<"Laco"<<endl;
+	std::cout<<"+de ";
+	fromExpr->printTree();
+	std::cout<<" até ";
+	tilExpr->printTree();
+	std::cout<<endl;
+	std::cout<<"+faca: ";
+	std::cout<<endl;
+	for (Node* line: lines) {
+		line->printTree();
+	}
+	std::cout<<"Fim laco";
+}

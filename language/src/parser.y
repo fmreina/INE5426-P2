@@ -311,6 +311,9 @@ from_scope: T_FROM expression T_UNTIL expression new_line T_OPEN_BRACES new_line
 			{ $$ = new AST::FromTil_Block($2, $4);
 			  if($8 != NULL) $$->lines.push_back($8);
 			}
+		  | T_FROM expression T_UNTIL expression new_line T_OPEN_BRACES new_line T_CLOSE_BRACES
+			{ $$ = new AST::FromTil_Block($2, $4);
+			}
 		  ;
 
 /*

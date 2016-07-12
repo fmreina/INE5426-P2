@@ -290,66 +290,48 @@ target_array: T_WORD T_OPEN_BRACKETS expression T_CLOSE_BRACKETS { $$ = symTab.a
  *	declaration of scope
  */
 scope: /*while_scope{ $$ = $1; }*/
-		new_scope while_scope end_scope{ $$ = $1; }
+	   while_scope end_scope { $$ = $1; }
 	 | if_scope { $$ = $1; }
 	 ;
 
-new_scope: {symTabAux.entryList = symTab.entryList;
-				std::cout << "Aux: "<<endl; 
-				for(auto it = symTabAux.entryList.cbegin(); it != symTabAux.entryList.cend(); ++it){
-					std::cout << it->first << ":" << it->second.value<<endl;
-				}
-
-				// ST::SymbolTable clear;
-			// symTab = clear;//new ST::SymbolTable();
-				symTabHist.entryList.insert(symTab.entryList.begin(), symTab.entryList.end() );
-				symTab.entryList.clear();
-				std::cout << "List:clear: "<<endl; 
-				for(auto it = symTab.entryList.cbegin(); it != symTab.entryList.cend(); ++it){
-					std::cout << it->first << ":" << it->second.value<<endl;
-				}
+new_scope: { symTab = new ST::SymbolTable(symTab);
+			// cout<<"Created new table: "<<endl;
+			// for(auto it = symTab.entryList.cbegin(); it != symTab.entryList.cend(); ++it){
+			// 	std::cout << "\t" << it->first << " " << it->second.type<<endl;
+			// }
+			// cout<<"\n it's parent table: "<<endl;
+			// for(auto it = symTab.parent->entryList.cbegin(); it != symTab.parent->entryList.cend(); ++it){
+			// 	std::cout << "\t" << it->first << " " << it->second.type<<endl;
+			// }
 		};
 
-end_scope: { cout<< "endScope" <<endl;
-				std::cout << "List:new: "<<endl; 
-				for(auto it = symTab.entryList.cbegin(); it != symTab.entryList.cend(); ++it){
-					std::cout << it->first << ":" << it->second.value<<endl;
-				}
-			symTabHist.entryList.insert(symTab.entryList.begin(), symTab.entryList.end());
-			symTab.entryList = symTabAux.entryList;
-			// ST::SymbolTable clear;
-			symTabAux.entryList.clear();
-				std::cout << "List:restored: "<<endl; 
-				for(auto it = symTab.entryList.cbegin(); it != symTab.entryList.cend(); ++it){
-					std::cout << it->first << ":" << it->second.value<<endl;
-				}
-
-			symTab.entryList = symTabHist.entryList;
-			std::cout << "List:hist: "<<endl; 
-				for(auto it = symTab.entryList.cbegin(); it != symTab.entryList.cend(); ++it){
-					std::cout << it->first << ":" << it->second.value<<endl;
-				}
-};
+end_scope: { if(symTab.parent != nullptr) symTab = symTab.parent;
+			// cout<< "endScope" <<endl;
+			// std::cout << "RestoredList: "<<endl; 
+			// for(auto it = symTab.entryList.cbegin(); it != symTab.entryList.cend(); ++it){
+			// 	std::cout << "  " << it->first << " " << it->second.type<<endl;
+			// }
+			};
 
 /*
  *	declaration of while scope (loop)
  */
-while_scope: T_WHILE T_OPEN_PARENTHESIS expression T_CLOSE_PARENTHESIS new_line T_OPEN_BRACES new_line block T_CLOSE_BRACES
+while_scope: T_WHILE T_OPEN_PARENTHESIS expression T_CLOSE_PARENTHESIS new_line T_OPEN_BRACES new_line new_scope block T_CLOSE_BRACES
 					 { $$ = new AST::WhileBlock($3); 
-					   if($8 != NULL) $$->lines.push_back($8); }
+					   if($9 != NULL) $$->lines.push_back($9); }
 			;
 
 /*
  *	declaration of if scope (conditional)
  */
-if_scope: T_IF T_OPEN_PARENTHESIS expression T_CLOSE_PARENTHESIS new_line T_OPEN_BRACES new_line block T_CLOSE_BRACES 
+if_scope: T_IF T_OPEN_PARENTHESIS expression T_CLOSE_PARENTHESIS new_line T_OPEN_BRACES new_line new_scope block end_scope T_CLOSE_BRACES 
 					{ $$ = new AST::IfBlock($3);
-					  if($8 != NULL) $$->thenLines.push_back($8); }
-		 | T_IF T_OPEN_PARENTHESIS expression T_CLOSE_PARENTHESIS new_line T_OPEN_BRACES new_line block T_CLOSE_BRACES new_line T_ELSE new_line T_OPEN_BRACES new_line block T_CLOSE_BRACES 
+					  if($9 != NULL) $$->thenLines.push_back($9); }
+		 | T_IF T_OPEN_PARENTHESIS expression T_CLOSE_PARENTHESIS new_line T_OPEN_BRACES new_line new_scope block end_scope T_CLOSE_BRACES new_line T_ELSE new_line T_OPEN_BRACES new_line new_scope block end_scope T_CLOSE_BRACES 
 		 			{ $$ = new AST::IfBlock($3);
-					  if($8 != NULL) $$->thenLines.push_back($8); 
+					  if($9 != NULL) $$->thenLines.push_back($9); 
 					  $$->hasElse = true;
-					  if($15 != NULL) $$->elseLines.push_back($15); }
+					  if($18 != NULL) $$->elseLines.push_back($18); }
 		 ;
 
 // /*

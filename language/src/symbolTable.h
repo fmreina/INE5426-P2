@@ -16,8 +16,6 @@ extern void yyerror(const char* s, ...);
 namespace ST {
 	class Symbol;
 
-	// enum Kind { variable, array, unknown };
-
 	typedef std::map<std::string, Symbol> SymbolList; // set of symbols
 
 	/*
@@ -31,11 +29,10 @@ namespace ST {
 			TYPE::Type type;
 			KIND::Kind kind;
 			std::string lengh = "0";
-			std::string value;
+			// std::string value;
 			bool initialized;
 			Symbol( TYPE::Type newType, KIND::Kind newKind, std::string newLengh, bool init ) 
 					: type(newType), kind(newKind), lengh(newLengh), initialized(init) { 
-					// std::cout << "symbol: "<<newType<<endl;
 					}
 			Symbol( ) {type = TYPE::unknown; kind = KIND::unknown; initialized = false; lengh = "0"; }
 	};
@@ -52,11 +49,26 @@ namespace ST {
 	class SymbolTable {
 		public:
 			SymbolList entryList;
-			SymbolTable(){}
-			bool checkId( std::string id ) { return entryList.find(id) != entryList.end(); } // @return true if variable was defined
+			SymbolTable* parent;
+			SymbolTable() : parent(nullptr){}
+			SymbolTable(SymbolTable* parentTable) : parent(parentTable){}
+			bool checkId( std::string id ) { 
+				if(entryList.find(id) != entryList.end())
+         			return true;
+       			if(parent != NULL)
+          			return parent->checkId(id);
+        		return false;
+			} // @return true if variable was defined
 			void addSymbol(std::string id, Symbol newSymbol) { entryList[id] = newSymbol; }
 			AST::Node* newVariable( std::string id, TYPE::Type type, KIND::Kind kind, std::string lengh);
 			AST::Node* assignVariable(std::string id, TYPE::Type type);
 			AST::Node* useVariable(std::string id);
+			Symbol* getSymbol(std::string id){
+				if(entryList.find(id) != entryList.end())
+					return &entryList[id];
+				if( parent != NULL )
+					return parent->getSymbol(id);
+				return nullptr;
+			}
 	};
 }

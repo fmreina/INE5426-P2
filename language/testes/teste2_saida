@@ -1,0 +1,14 @@
+Declaracão de variável inteira: a, b
+Declaracão de variável real: c, d
+Declaracão de variável booleana: e, f
+Declaracão de arranjo inteiro de tamanho 4: ar
+Atribuicão de valor para variável a: valor inteiro 2
+Atribuicão de valor para variável b: valor inteiro 3
+Atribuicão de valor para variável c: valor real 3.5
+Atribuicão de valor para variável d: valor real 5.6
+Atribuicão de valor para variável e: valor booleano true
+Atribuicão de valor para variável f: valor booleano false
+Atribuicão de valor para arranjo desconhecido ar {+indice: valor inteiro 0}: valor inteiro 3
+Atribuicão de valor para arranjo desconhecido ar {+indice: valor inteiro 1}: valor inteiro 4
+Atribuicão de valor para arranjo desconhecido ar {+indice: valor inteiro 2}: valor inteiro 5
+Atribuicão de valor para arranjo desconhecido ar {+indice: valor inteiro 3}: valor inteiro 6

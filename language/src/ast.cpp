@@ -114,6 +114,24 @@ void BinOp::math(Node *newLeft, OPERATION::Operation op, Node *newRight){
 		this->right = newRight;
 }
 
+void BinOp::comparison(Node *newLeft, OPERATION::Operation op, Node *newRight){
+	if(newLeft->type != TYPE::integer && newLeft->type != TYPE::real) MESSAGES::wrongTypeError(op, TYPE::integer, TYPE::real, newLeft->type);
+	if(newRight->type != TYPE::integer && newRight->type != TYPE::real) MESSAGES::wrongTypeError(op, TYPE::integer, TYPE::real, newRight->type);
+	this->op = op;
+	this->left = newLeft;
+	this->right = newRight;
+	this->type = TYPE::boolean;
+}
+
+void BinOp::unOperation(Node *newLeft, OPERATION::Operation op, Node *newRight){
+	if(newLeft->type != TYPE::integer && newLeft->type != TYPE::real) MESSAGES::wrongTypeError(op, TYPE::boolean, newLeft->type);
+	if(newRight->type != TYPE::integer && newRight->type != TYPE::real) MESSAGES::wrongTypeError(op, TYPE::boolean, newRight->type);
+	this->op = op;
+	this->left = newLeft;
+	this->right = newRight;
+	this->type = TYPE::boolean;
+}
+
 void BinOp::assign(Node *newLeft, OPERATION::Operation op, Node *newRight){
 	/*
 	 * if left type is the same as right type, ok!

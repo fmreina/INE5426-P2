@@ -93,6 +93,7 @@ namespace TYPE {
 		integer, 
 		real, 
 		boolean,
+		vazio,
 		unknown
 	};
 
@@ -103,6 +104,7 @@ namespace TYPE {
 		"inteira",
 		"real",
 		"booleana",
+		"vazia",
 		"desconhecida"
 	};
 
@@ -113,6 +115,7 @@ namespace TYPE {
     	"inteiro",
     	"real",
     	"booleano",
+    	"vazio",
     	"desconhecido"
     };
 
@@ -135,6 +138,7 @@ namespace KIND{
 	enum Kind { 
 		variable,
 		array,
+		function,
 		unknown
 	};
 }

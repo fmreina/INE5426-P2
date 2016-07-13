@@ -53,6 +53,7 @@ word[a-zA-Z]+
 "||"	{ return T_OR; }
 "!"		{ return T_NOT; }	
 
+"void"	{ return T_TYPE_VOID; }
 "int"	{ return T_TYPE_INT; }
 "real"	{ return T_TYPE_REAL; }
 "bool"	{ return T_TYPE_BOOL; }
@@ -60,9 +61,12 @@ word[a-zA-Z]+
 "se"	{ return T_IF; }
 "entao"	{ return T_THEN; }
 "senao"	{ return T_ELSE; }
+"de"	{ return T_FROM; }
+"ate"	{ return T_UNTIL; }
+"return"	{ return T_RETURN; }
 
-"true"	{ yylval.string = strdup(yytext); return T_BOOL; } // received as string as the objective is only printing
-"false"	{ yylval.string = strdup(yytext); return T_BOOL; } // received as string as the objective is only printing
+"verdade"	{ yylval.string = strdup(yytext); return T_BOOL; } // received as string as the objective is only printing
+"falso"	{ yylval.string = strdup(yytext); return T_BOOL; } // received as string as the objective is only printing
 {digit}	{ yylval.string = strdup(yytext); return T_INT; } // received as string as the objective is only printing
 {real}	{ yylval.string = strdup(yytext); return T_REAL; } // received as string as the objective is only printing
 {word}	{ yylval.string = strdup(yytext); return T_WORD; } // received as string as the objective is only printing

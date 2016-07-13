@@ -55,6 +55,10 @@ AST::Node* SymbolTable::assignVariable( std::string id, TYPE::Type type ){
 		// entryList[id].value = "valueOf("+id+")"; // TODO: to complete: receive the value and set to the symbol
 		AST::Node* node = new AST::Word( id, type, kind, lengh );
 		// node->kind = kind;
+		// cout<<"NodeId: "<< id <<endl;
+		// cout<<"NodeType: "<< type <<endl;
+		// cout<<"NodeKind: "<< kind <<endl;
+		// cout<<"NodeLengh: "<< lengh <<endl;
 		return node;
 	}
 	return 0;
@@ -90,6 +94,10 @@ AST::Node* SymbolTable::useVariable( std::string id ){
 		if( !initialized ) yyerror("Variável ainda não foi inicializada! %s\n", id.c_str());
 		AST::Node* node = new AST::Word( id, type, kind, lengh );
 		// node->kind = kind;
+		// cout<<"NodeId: "<< id <<endl;
+		// cout<<"NodeType: "<< type <<endl;
+		// cout<<"NodeKind: "<< kind <<endl;
+		// cout<<"NodeLengh: "<< lengh <<endl;
 		return node;
 	}
 	return 0;

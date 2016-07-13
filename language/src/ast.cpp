@@ -43,7 +43,7 @@ void BinOp::printTree(){
 				left->printTree();
 				std::cout << ": ";
 			}else if(left->size != NULL){
-				std::cout << "Atribuicão de valor para arranjo "<<  TYPE::maleName[type] << " ";
+				std::cout << "Atribuicão de valor para arranjo "<<  TYPE::maleName[left->type] << " ";
 				left->printTree();
 				std::cout << " {+indice: ";
 				left->size->printTree();
@@ -416,7 +416,22 @@ bool Node::needCoersion(TYPE::Type right, TYPE::Type left){
  */
  void FunctionDefinition::printTree(){
  	std::cout << "Definicão de funcão " << TYPE::femaleName[type] << ": ";
- 	signature->printTree();
+ 	// signature->printTree();
+ 	for( auto var = funcs.begin(); var != funcs.end(); var ++){
+ 		std::cout << dynamic_cast<Word *>(*var)->word;
+ 		if(next(var) != funcs.end())
+ 			std::cout << ", ";
+ 	}
+ 	std::cout << "\n+parametros:"<<endl;
+ 	for( auto var = params.begin(); var != params.end(); var ++){
+ 		// std::cout << "parametro ";
+ 		(*var)->isParam = true;
+ 		(*var)->printTree();
+ 		(*var)->isParam = false;
+ 		if(next(var) != params.end())
+ 			std::cout << "\n";
+ 	}
+ 	//
 
  	std::cout << "\n+corpo:"<<endl;
  	for( auto var = lines.begin(); var != lines.end(); var ++){
@@ -520,16 +535,21 @@ void TypeDef::printTree(){
 	std::cout<<"\nFim definicao";
 }
 
-/*
- *	print the components of the scope of the compound type
- */
-void TypeBody::printTree(){
-	for( auto var = lines.begin(); var != lines.end(); var ++){
- 		std::cout<<"Componente ";
- 		(*var)->isParam = true;
- 		(*var)->printTree();
- 		(*var)->isParam = false;
- 		if(next(var) != lines.end())
- 			std::cout << "\n";
- 	}
+void FromTil_Block::printTree(){
+	if(error){
+		std::cout<< "Ocorreu erro na declaracão e a estrutura \"de <inteiro> ate <inteiro>\" não foi computada.";
+	}else {
+		std::cout<<"Laco"<<endl;
+		std::cout<<"+de ";
+		fromExpr->printTree();
+		std::cout<<" até ";
+		tilExpr->printTree();
+		std::cout<<endl;
+		std::cout<<"+faca: ";
+		std::cout<<endl;
+		for (Node* line: lines) {
+			line->printTree();
+		}
+		std::cout<<"Fim laco";
+	}
 }

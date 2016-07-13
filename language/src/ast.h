@@ -103,6 +103,19 @@ namespace AST {
 					case OPERATION::divide:
 						math(newLeft, op, newRight);
 					break;
+					case OPERATION::greater:
+					case OPERATION::greater_equals: 
+					case OPERATION::smaller:
+					case OPERATION::smaller_equals:
+					case OPERATION::equals:
+					case OPERATION::different:
+						comparison(newLeft, op, newRight);
+					break;
+					// AND/OR operations must be boolean
+					case OPERATION::and_op:
+					case OPERATION::or_op:
+						unOperation(newLeft, op, newRight);
+					break;
 					default:
 						this->op = op;
 						this->left = newLeft;
@@ -114,6 +127,8 @@ namespace AST {
 			void assign(Node *newLeft, OPERATION::Operation op, Node *newRight);
 			void validateAndAssign(Node *newLeft, OPERATION::Operation op, Node *newRight);
 			void math(Node *newLeft, OPERATION::Operation op, Node *newRight);
+			void comparison(Node *newLeft, OPERATION::Operation op, Node *newRight);
+			void unOperation(Node *newLeft, OPERATION::Operation op, Node *newRight);
 			void coerceToInteger(Node *newLeft, Node *newRight);
 
 	};

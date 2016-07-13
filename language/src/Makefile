@@ -11,7 +11,8 @@ clang: *.cpp *.h
 	${CC} -o ${OUTPUT} *.cpp ${LLVMPARAM} ${PARAM}
 
 yacc: parser.y
-	${BISON} --defines=parser.h --output=parser.cpp --debug -v parser.y # usar flag -v ou -- verbose para gerar um arq.output com o log da compilacao
+	${BISON} --defines=parser.h --output=parser.cpp --debug -v parser.y 
+	# flag -v or --verbose to generate file.output with a log of the compilation
 
 flex: scanner.l
 	${FLEX} -o scanner.cpp scanner.l 

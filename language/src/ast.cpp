@@ -43,7 +43,7 @@ void BinOp::printTree(){
 				left->printTree();
 				std::cout << ": ";
 			}else if(left->size != NULL){
-				std::cout << "Atribuicão de valor para arranjo "<<  TYPE::maleName[type] << " ";
+				std::cout << "Atribuicão de valor para arranjo "<<  TYPE::maleName[left->type] << " ";
 				left->printTree();
 				std::cout << " {+indice: ";
 				left->size->printTree();
@@ -118,6 +118,9 @@ void BinOp::assign(Node *newLeft, OPERATION::Operation op, Node *newRight){
 	/*
 	 * if left type is the same as right type, ok!
 	 */
+	 // newLeft->printTree();
+	 // cout<<"\n tipo "<< newLeft->type<<endl;
+
 	 auto arr = dynamic_cast<AST::Word *>(newLeft);
 	if(arr->kind == KIND::array){
 		auto position = dynamic_cast<Value*>(arr->size);

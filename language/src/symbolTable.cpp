@@ -23,26 +23,42 @@ AST::Node* SymbolTable::newVariable( std::string id, TYPE::Type type, KIND::Kind
 	}
 
 	AST::Node* node = new AST::Word( id, type, kind, lengh );
-	node->kind = kind;
+	// node->kind = kind;
 	return node;
-	// return new AST::Word( id, type, kind );
 }
 
 /*
  *	initializes a variable declared previously
  */
 AST::Node* SymbolTable::assignVariable( std::string id, TYPE::Type type ){
-	// TYPE::Type type;
 	if( !checkId(id) ) yyerror("Variável ainda não foi definida! %s\n", id.c_str());
 	else{
-		type = entryList[id].type;
-		entryList[id].initialized = true;
-		KIND::Kind kind = entryList[id].kind;
-		std::string lengh = entryList[id].lengh;
+		KIND::Kind kind;
+		std::string lengh;
+
+		Symbol* symbol = getSymbol(id);
+		if(symbol != nullptr){
+			type = symbol->type;
+			kind = symbol->kind;
+			lengh = symbol->lengh;
+			symbol->initialized = true;
+		}else{
+			type = entryList[id].type;
+			kind = entryList[id].kind;
+			lengh = entryList[id].lengh;
+			entryList[id].initialized = true;
+		}
+
+		// entryList[id].initialized = true;
+		// KIND::Kind kind = entryList[id].kind;
+		// std::string lengh = entryList[id].lengh;
 		// entryList[id].value = "valueOf("+id+")"; // TODO: to complete: receive the value and set to the symbol
-		// return new AST::Word( id, type, kind);
 		AST::Node* node = new AST::Word( id, type, kind, lengh );
-		node->kind = kind;
+		// node->kind = kind;
+		// cout<<"NodeId: "<< id <<endl;
+		// cout<<"NodeType: "<< type <<endl;
+		// cout<<"NodeKind: "<< kind <<endl;
+		// cout<<"NodeLengh: "<< lengh <<endl;
 		return node;
 	}
 	return 0;
@@ -52,19 +68,36 @@ AST::Node* SymbolTable::assignVariable( std::string id, TYPE::Type type ){
  *	retreive a variable previously declared and initialized
  */
 AST::Node* SymbolTable::useVariable( std::string id ){
-	// std::cout<< "symbolTable" <<std::endl;
 	TYPE::Type type;
 	if( !checkId(id) ) yyerror("Variável ainda não foi definida! %s\n", id.c_str());
 	else{
-		TYPE::Type type = entryList[id].type;
-		KIND::Kind kind = entryList[id].kind;
-		std::string lengh = entryList[id].lengh;
-		// std::cout<<"use variable: "<<std::endl;
-		// std::cout<<"use variable: "<<kind<<std::endl;
-		if( !entryList[id].initialized ) yyerror("Variável ainda não foi inicializada! %s\n", id.c_str());
-		// return new AST::Word( id, type, kind );
+		TYPE::Type type;
+		KIND::Kind kind;
+		std::string lengh;
+		bool initialized = false;
+
+		Symbol* symbol = getSymbol(id);
+		if(symbol != nullptr){
+			type = symbol->type;
+			kind = symbol->kind;
+			lengh = symbol->lengh;
+			initialized = symbol->initialized;
+		}else{
+			type = entryList[id].type;
+			kind = entryList[id].kind;
+			lengh = entryList[id].lengh;
+			initialized = entryList[id].initialized;
+		}
+		// TYPE::Type type = entryList[id].type;
+		// KIND::Kind kind = entryList[id].kind;
+		// std::string lengh = entryList[id].lengh;
+		if( !initialized ) yyerror("Variável ainda não foi inicializada! %s\n", id.c_str());
 		AST::Node* node = new AST::Word( id, type, kind, lengh );
-		node->kind = kind;
+		// node->kind = kind;
+		// cout<<"NodeId: "<< id <<endl;
+		// cout<<"NodeType: "<< type <<endl;
+		// cout<<"NodeKind: "<< kind <<endl;
+		// cout<<"NodeLengh: "<< lengh <<endl;
 		return node;
 	}
 	return 0;

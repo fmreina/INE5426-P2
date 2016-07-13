@@ -1,0 +1,17 @@
+Declaracão de variável inteira: b
+Atribuicão de valor para variável b: valor inteiro 9
+Expressão condicional
++se: (variável b (maior desconhecido) valor inteiro 7)
++então: 
+Atribuicão de valor para variável b: valor inteiro 10
++senão: 
+Atribuicão de valor para variável b: valor inteiro 8
+Fim expressão condicional
+Expressão condicional
++se: (variável b (menor desconhecido) valor inteiro 6)
++então: 
+Atribuicão de valor para variável b: valor inteiro 7
++senão: 
+Atribuicão de valor para variável b: valor inteiro 5
+Fim expressão condicional
+

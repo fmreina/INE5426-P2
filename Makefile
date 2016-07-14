@@ -24,7 +24,7 @@ $(OBJ)/main.o: $(SRC)/main.cpp $(INC)/ast.h $(INC)/llvm-utils.h
 $(OBJ)/ast.o: $(SRC)/ast.cpp $(INC)/ast.h
 	${CC} -c -o $(OBJ)/ast.o $(SRC)/ast.cpp -I$(INC) ${PARAM} ${LLVMPARAM}
 
-$$(OBJ)/codegen.o: $(SRC)/codegen.cpp $(INC)/ast.h $(INC)/llvm-utils.h
+$(OBJ)/codegen.o: $(SRC)/codegen.cpp $(INC)/ast.h $(INC)/llvm-utils.h
 	${CC} -c -o $(OBJ)/codegen.o $(SRC)/codegen.cpp -I$(INC) ${PARAM} ${LLVMPARAM}
 
 $(OBJ)/symbolTable.o: $(SRC)/symbolTable.cpp $(INC)/symbolTable.h $(INC)/llvm-utils.h

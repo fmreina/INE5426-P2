@@ -12,10 +12,10 @@
 #include "staff.h"
 #include "llvm-utils.h" /*LLVM-related code*/
 
+extern void yyerror(const char* s, ...);
 
 using namespace std;
 
-extern void yyerrer(const char *s, ...);
 namespace AST {
 
 	class Node;
@@ -359,6 +359,37 @@ namespace AST {
 			}
 			void printTree();
 			void codeGen();
+	};
+
+	class MESS{
+	public:
+		static void wrongTypeError(OPERATION::Operation op, TYPE::Type expected, TYPE::Type given){
+		yyerror("\n - semântico: operacão %s espera %s mas recebeu %s.\n", OPERATION::name[op].c_str(), TYPE::maleName[expected].c_str(), TYPE::maleName[given].c_str());
+		}
+
+		static void wrongTypeError(OPERATION::Operation op, TYPE::Type expected1, TYPE::Type expected2, TYPE::Type given){
+			yyerror("\n - semântico: operacão %s espera %s ou %s mas recebeu %s.\n", OPERATION::name[op].c_str(), TYPE::maleName[expected1].c_str(), TYPE::maleName[expected2].c_str(), TYPE::maleName[given].c_str());
+		}
+
+		static void assignValueMessage(AST::Node* left, AST::Node* right){
+			std::cout<<  " Ação: Foi atribuido o ";
+			right->printTree();
+			std::cout<<  " à ";
+			left->printTree(); 
+			std::cout<<"."<<std::endl;
+		}
+
+		static void assignIntegerPartMessage(AST::Node* left, AST::Node* right){
+			std::cout<<  " Ação: Foi atribuido a parte inteira de ";
+			right->printTree();
+			std::cout<<  " à ";
+			left->printTree(); 
+			std::cout<<"."<<std::endl;
+		}
+
+		static void indexOutOfBounds(int position, int lengh){
+			yyerror("\n - Posicão válida. tentou acessar %d, mas o tamanho do array é %d.\n", position, lengh);
+		}
 	};
 }
 

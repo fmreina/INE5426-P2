@@ -7,11 +7,11 @@
  */
 
 #include "ast.h"
-#include "message.h"
+// #include "message.h"
 #include "symbolTable.h"
 
 using namespace AST;
-using namespace MESSAGES;
+// using namespace MESSAGES;
 
 extern ST::SymbolTable symTab;
 
@@ -103,8 +103,10 @@ void BinOp::printTree(){
 }
 
 void BinOp::math(Node *newLeft, OPERATION::Operation op, Node *newRight){
-	if(newLeft->type == TYPE::boolean) MESSAGES::wrongTypeError(op, TYPE::integer, TYPE::real, newLeft->type);
-	if(newRight->type == TYPE::boolean) MESSAGES::wrongTypeError(op, TYPE::integer, TYPE::real, newRight->type);
+	// if(newLeft->type == TYPE::boolean) MESSAGES::wrongTypeError(op, TYPE::integer, TYPE::real, newLeft->type);
+	// if(newRight->type == TYPE::boolean) MESSAGES::wrongTypeError(op, TYPE::integer, TYPE::real, newRight->type);
+	if(newLeft->type == TYPE::boolean) MESS::wrongTypeError(op, TYPE::integer, TYPE::real, newLeft->type);
+	if(newRight->type == TYPE::boolean) MESS::wrongTypeError(op, TYPE::integer, TYPE::real, newRight->type);
 	this->type = TYPE::integer;
 	if(newLeft->type == TYPE::real || newRight->type == TYPE::real){
 		this->type = TYPE::real;
@@ -115,8 +117,10 @@ void BinOp::math(Node *newLeft, OPERATION::Operation op, Node *newRight){
 }
 
 void BinOp::comparison(Node *newLeft, OPERATION::Operation op, Node *newRight){
-	if(newLeft->type != TYPE::integer && newLeft->type != TYPE::real) MESSAGES::wrongTypeError(op, TYPE::integer, TYPE::real, newLeft->type);
-	if(newRight->type != TYPE::integer && newRight->type != TYPE::real) MESSAGES::wrongTypeError(op, TYPE::integer, TYPE::real, newRight->type);
+	// if(newLeft->type != TYPE::integer && newLeft->type != TYPE::real) MESSAGES::wrongTypeError(op, TYPE::integer, TYPE::real, newLeft->type);
+	// if(newRight->type != TYPE::integer && newRight->type != TYPE::real) MESSAGES::wrongTypeError(op, TYPE::integer, TYPE::real, newRight->type);
+	if(newLeft->type != TYPE::integer && newLeft->type != TYPE::real) MESS::wrongTypeError(op, TYPE::integer, TYPE::real, newLeft->type);
+	if(newRight->type != TYPE::integer && newRight->type != TYPE::real) MESS::wrongTypeError(op, TYPE::integer, TYPE::real, newRight->type);
 	this->op = op;
 	this->left = newLeft;
 	this->right = newRight;
@@ -124,8 +128,10 @@ void BinOp::comparison(Node *newLeft, OPERATION::Operation op, Node *newRight){
 }
 
 void BinOp::unOperation(Node *newLeft, OPERATION::Operation op, Node *newRight){
-	if(newLeft->type != TYPE::integer && newLeft->type != TYPE::real) MESSAGES::wrongTypeError(op, TYPE::boolean, newLeft->type);
-	if(newRight->type != TYPE::integer && newRight->type != TYPE::real) MESSAGES::wrongTypeError(op, TYPE::boolean, newRight->type);
+	// if(newLeft->type != TYPE::integer && newLeft->type != TYPE::real) MESSAGES::wrongTypeError(op, TYPE::boolean, newLeft->type);
+	// if(newRight->type != TYPE::integer && newRight->type != TYPE::real) MESSAGES::wrongTypeError(op, TYPE::boolean, newRight->type);
+	if(newLeft->type != TYPE::integer && newLeft->type != TYPE::real) MESS::wrongTypeError(op, TYPE::boolean, newLeft->type);
+	if(newRight->type != TYPE::integer && newRight->type != TYPE::real) MESS::wrongTypeError(op, TYPE::boolean, newRight->type);
 	this->op = op;
 	this->left = newLeft;
 	this->right = newRight;
@@ -155,7 +161,8 @@ void BinOp::assign(Node *newLeft, OPERATION::Operation op, Node *newRight){
 				//FIXME: how to avoid segmentation fault if do not set the values?
 				//index out of bounds
 				// std::cout<<"ERROR: Index out of bounds." << std::endl;
-				MESSAGES::indexOutOfBounds(pos, lengh-1);
+				// MESSAGES::indexOutOfBounds(pos, lengh-1);
+				MESS::indexOutOfBounds(pos, lengh-1);
 				this->left = newLeft;
 				this->op = op;
 				// this->right = new Value("0", newRight->type);
@@ -186,7 +193,8 @@ void BinOp::validateAndAssign(Node *newLeft, OPERATION::Operation op, Node *newR
 		/*
 		 * if left type is different from right type, send an error and take an action
 		 */
-		MESSAGES::wrongTypeError(op, newLeft->type, newRight->type);
+		// MESSAGES::wrongTypeError(op, newLeft->type, newRight->type);
+		MESS::wrongTypeError(op, newLeft->type, newRight->type);
 		this->left = newLeft;
 		this->op = op;
 		if(newLeft->type == TYPE::integer){ 
@@ -194,11 +202,13 @@ void BinOp::validateAndAssign(Node *newLeft, OPERATION::Operation op, Node *newR
 		} else if (newLeft->type == TYPE::real){
 			// std::cout<< " FIXME: assigning real 0.0" << std::endl; // what to do in this case?
 			this->right = new Value("0.0", TYPE::real);
-			MESSAGES::assignValueMessage(this->left, this->right);
+			// MESSAGES::assignValueMessage(this->left, this->right);
+			MESS::assignValueMessage(this->left, this->right);
 		} else if (newLeft->type == TYPE::boolean){
 			// std::cout<< " FIXME: assigning boolean false" << std::endl; // what to do in this case?
 			this->right = new Value("false", TYPE::boolean);
-			MESSAGES::assignValueMessage(this->left, this->right);
+			// MESSAGES::assignValueMessage(this->left, this->right);
+			MESS::assignValueMessage(this->left, this->right);
 		}
 	}
 }
@@ -219,12 +229,14 @@ void BinOp::coerceToInteger(Node *newLeft, Node *newRight){
 			// std::cout<< " FIXME: assigning integer 0" << std::endl; // what to do in this case?
 			this->right = new Value("0", TYPE::integer);
 		}
-		MESSAGES::assignValueMessage(this->left, this->right);
+		// MESSAGES::assignValueMessage(this->left, this->right);
+		MESS::assignValueMessage(this->left, this->right);
 	}else{
 		// in case it can't cast
 		// std::cout<< "Casting Error: at AST::BinOP at ast.h" << std::endl;
 		this->right = newRight;
-		MESSAGES::assignIntegerPartMessage(this->left, this->right);
+		// MESSAGES::assignIntegerPartMessage(this->left, this->right);
+		MESS::assignIntegerPartMessage(this->left, this->right);
 	}
 }
 
@@ -281,12 +293,14 @@ void UnOp::checkType(TYPE::Type type, OPERATION::Operation op){
 	switch(op){
 		case OPERATION::u_minus:
 			if(type != TYPE::integer && type != TYPE::real){ 
-				MESSAGES::wrongTypeError(op, TYPE::integer, TYPE::real, type);}
+				// MESSAGES::wrongTypeError(op, TYPE::integer, TYPE::real, type);}
+				MESS::wrongTypeError(op, TYPE::integer, TYPE::real, type);}
 			else {
 				this->node->type = type;}
 			break;
 		case OPERATION::not_op:
-			if(type != TYPE::boolean) MESSAGES::wrongTypeError(op, TYPE::boolean, type);
+			// if(type != TYPE::boolean) MESSAGES::wrongTypeError(op, TYPE::boolean, type);
+			if(type != TYPE::boolean) MESS::wrongTypeError(op, TYPE::boolean, type);
 			break;
 		default:
 			break;

@@ -16,21 +16,16 @@ void AST::Block::codeGen(){
     //}
 }
 
-// /* Constant: LLVM keeps constants 'uniqued' together */
-// void Integer::codeGen(){
-//     if(code == NULL) //Generates code if we have none. We only do it when we have an expression or assignment
-//         code = ConstantInt::get(IR::Context, APInt(64,value));
-//     //code->dump(); //if curious about the generated IR
-// }
-
 void AST::Value::codeGen(){
-
+    // if(code == NULL) //Generates code if we have none. We only do it when we have an expression or assignment
+    //     code = ConstantInt::get(IR::Context, APInt(64,value));
+    // code->dump(); //if curious about the generated IR
 }
 
 
 /* Binary operation: we add to the basic block an instruction using
  * the code generated for the left and right hand sides */
-// void AST::BinOp::codeGen(){
+void AST::BinOp::codeGen(){
     // if (code == NULL) { //generates code if we have none
     //     if (op == assign){
     //         /*Assignments use the name of the variable and update the symbol table.*/
@@ -56,12 +51,7 @@ void AST::Value::codeGen(){
     //         }
     //     }
     // }
-    //code->dump(); //if curious about the generated IR
-// }
-
-void AST::BinOp::codeGen(){
-
-    //code->dump(); //if curious about the generated IR
+    // code->dump(); //if curious about the generated IR
 }
 
 // void AST::UnOp::codeGen(){

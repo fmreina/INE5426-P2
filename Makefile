@@ -10,7 +10,7 @@ BISON=bison
 DEBUB=--debug
 VERBOSE=-v
 CC=clang++
-PARAM=-std=c++11 -fcxx-exceptions -Wno-deprecated-register -pthread -v
+PARAM=-std=c++11 -fcxx-exceptions -Wno-deprecated-register -pthread
 LLVMLIB= `llvm-config --ldflags --libs core native` 
 LLVMPARAM=`llvm-config --cppflags`
 OUTPUT=dothething

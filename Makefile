@@ -11,7 +11,7 @@ DEBUB=--debug
 VERBOSE=-v
 CC=clang++
 PARAM=-std=c++11 -fcxx-exceptions -Wno-deprecated-register -pthread
-LLVMLIB= `llvm-config --ldflags --libs core native` 
+LLVMLIB= `llvm-config --ldflags --libs core native` -ldl
 LLVMPARAM=`llvm-config --cppflags`
 OUTPUT=dothething
 

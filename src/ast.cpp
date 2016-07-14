@@ -316,7 +316,7 @@ void Word::printTree(){
  *	valor <TYPE::Type> <std::string>
  *	exemple: valor boolean TRUE
  */
-void Value::printTree(){
+void AST::Value::printTree(){
 	std::cout << "valor " << TYPE::maleName[type] << " " << value;
 	return;
 }
@@ -534,25 +534,8 @@ void FunctionBody::printTree(){
 }
 
 /*
- *	prints the definition of a compound type, listing it's components
+ *	prints the definition of a for loop
  */
-void TypeDef::printTree(){
-	std::cout<<"Definicao tipo: ";
-	name->isComplex = true;
-	name->printTree();
-	name->isComplex = false;
-	std::cout<<"\n+componentes:\n";
-	for( auto var = nodes.begin(); var != nodes.end(); var ++){
- 		(*var)->isParam = true;
- 		(*var)->printTree();
- 		(*var)->isParam = false;
- 		if(next(var) != nodes.end())
- 			std::cout << "\n";
- 	}
-
-	std::cout<<"\nFim definicao";
-}
-
 void FromTil_Block::printTree(){
 	if(error){
 		std::cout<< "Ocorreu erro na declaracão e a estrutura \"de <inteiro> ate <inteiro>\" não foi computada.";

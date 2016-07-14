@@ -10,28 +10,28 @@ BISON=bison
 DEBUB=--debug
 VERBOSE=-v
 CC=clang++
-PARAM=-std=c++11 -fcxx-exceptions -Wno-deprecated-register
-LLVMLIB=`llvm-config --ldflags --libs core native` 
+PARAM=-std=c++11 -fcxx-exceptions -Wno-deprecated-register -pthread -v
+LLVMLIB= `llvm-config --ldflags --libs core native` 
 LLVMPARAM=`llvm-config --cppflags`
 OUTPUT=dothething
 
-$(OUTPUT): $(OBJ)/ast.o $(OBJ)/parser.o $(OBJ)/scanner.o $(OBJ)/main.o $(OBJ)/symbolTable.o #$(OBJ)/codegen.o $(OBJ)/llvm-utils.o
+$(OUTPUT): $(OBJ)/ast.o $(OBJ)/parser.o $(OBJ)/codegen.o $(OBJ)/scanner.o $(OBJ)/main.o $(OBJ)/symbolTable.o $(OBJ)/llvm-utils.o
 	${CC} -o $(OUTPUT) $(OBJ)/*.o -I$(INC) ${PARAM} ${LLVMLIB}
 
-$(OBJ)/main.o: $(SRC)/main.cpp $(INC)/ast.h #$(INC)/llvm-utils.h
+$(OBJ)/main.o: $(SRC)/main.cpp $(INC)/ast.h $(INC)/llvm-utils.h
 	${CC} -c -o $(OBJ)/main.o $(SRC)/main.cpp -I$(INC) ${PARAM} ${LLVMPARAM}
 
 $(OBJ)/ast.o: $(SRC)/ast.cpp $(INC)/ast.h
 	${CC} -c -o $(OBJ)/ast.o $(SRC)/ast.cpp -I$(INC) ${PARAM} ${LLVMPARAM}
 
-# # $(OBJ)/codegen.o: $(SRC)/codegen.cpp $(INC)/ast.h $(INC)/llvm-utils.h
-# # 	${CC} -c -o $(OBJ)/codegen.o $(SRC)/codegen.cpp -I$(INC) ${PARAM} ${LLVMPARAM}
+$$(OBJ)/codegen.o: $(SRC)/codegen.cpp $(INC)/ast.h $(INC)/llvm-utils.h
+	${CC} -c -o $(OBJ)/codegen.o $(SRC)/codegen.cpp -I$(INC) ${PARAM} ${LLVMPARAM}
 
-$(OBJ)/symbolTable.o: $(SRC)/symbolTable.cpp $(INC)/symbolTable.h #$(INC)/llvm-utils.h
+$(OBJ)/symbolTable.o: $(SRC)/symbolTable.cpp $(INC)/symbolTable.h $(INC)/llvm-utils.h
 	${CC} -c -o $(OBJ)/symbolTable.o $(SRC)/symbolTable.cpp -I$(INC) ${PARAM} ${LLVMPARAM}
 
-# $(OBJ)/llvm-utils.o: $(SRC)/llvm-utils.cpp $(INC)/llvm-utils.h
-# 	${CC} -c -o $(OBJ)/llvm-utils.o $(SRC)/llvm-utils.cpp -I$(INC) ${PARAM} ${LLVMPARAM}
+$(OBJ)/llvm-utils.o: $(SRC)/llvm-utils.cpp $(INC)/llvm-utils.h
+	${CC} -c -o $(OBJ)/llvm-utils.o $(SRC)/llvm-utils.cpp -I$(INC) ${PARAM} ${LLVMPARAM}
 
 $(OBJ)/message.o: $(SRC)/message.cpp $(INC)/ast.h $(INC)/staff.h $(INC)/message.h
 	${CC} -c -o $(OBJ)/message.o $(SRC)/message.cpp -I$(INC) ${PARAM} ${LLVMPARAM}

@@ -39,7 +39,7 @@ int main() {
      * This specifies that created instructions should be appended to the end of the specified block.
      */
     Builder.SetInsertPoint(mainBB);
-
+///////
     /*** Constants are all unified ***/
     /* http://llvm.org/docs/doxygen/html/classllvm_1_1ConstantInt.html
      * static ConstantInt * get (LLVMContext &Context, const APInt &V)
@@ -99,6 +99,7 @@ int main() {
     arguments.push_back(llvm::ConstantInt::get(Context, llvm::APInt(1, 1)));
     auto tstReturn = Builder.CreateCall(ourTest, arguments, "calltst");
 
+///////////
     /* And we return the average at the end*/
     Builder.CreateRet(tstReturn);
 

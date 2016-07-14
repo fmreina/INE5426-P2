@@ -33,6 +33,7 @@
 	AST::FunctionDefinition *func_def;
 	// AST::FunctionReturn *func_return;
 	AST::FunctionBody *body;
+	void* novalue;
 }
 
 /*
@@ -93,7 +94,7 @@
 %type <block> program
 %type <block> block
 %type <node> line
-%type <NULL> new_line
+%type <novalue> new_line
 %type <node> declaration
 %type <node> type
 %type <var> variable_list
@@ -117,6 +118,7 @@
 // %type <func_return> return
 %type <node> new_scope;
 %type <node> end_scope;
+%type <novalue> startcode
  
 /*
  *	Operator precedence for mathematical operators
@@ -146,7 +148,11 @@
 /*
  *	A program is made of many lines (blocks) 
  */
-program : block { programRoot = $1; }
+program : startcode block { programRoot = $2;
+							if($2->lines.back()->code != NULL){
+								IR::codeGenEnd($2->lines.back()->code);	
+							} 
+						 }
  		;
  	
 /*
@@ -156,6 +162,10 @@ program : block { programRoot = $1; }
 block :	line { $$ = new AST::Block(); if ($1 != NULL) $$->lines.push_back($1); }
  		| block line { if($2 != NULL) $1->lines.push_back($2); }
  		;
+
+/* startcode: Only sets up the code generation environment */
+startcode : { IR::codeGenSetup(); }
+          ;
 
 /*
  *	A line may be a declaration or an assignment

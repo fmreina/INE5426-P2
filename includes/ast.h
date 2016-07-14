@@ -10,6 +10,7 @@
 #include <iostream>
 #include <vector>
 #include "staff.h"
+#include "llvm-utils.h" /*LLVM-related code*/
 
 
 using namespace std;
@@ -49,6 +50,7 @@ namespace AST {
 			// ParamList params;
 			NodeList paramList;
 			KIND::Kind kind;
+			llvm::Value* code;
 	};
 
 	/*
@@ -62,6 +64,7 @@ namespace AST {
 			NodeList lines;
 			Block() { }
 			void printTree();
+			void codeGen();
 	};
 
 	/*
@@ -74,11 +77,13 @@ namespace AST {
 			std::string value;
 			TYPE::Type type;
 			Value(std::string value, TYPE::Type newType) : value(value), type(newType), Node(newType) { 
+				codeGen();
 				// std::cout<<"value: "<<value<<std::endl;
 				// std::cout<<"type: "<<TYPE::maleName[this->type]<<std::endl;
 				// std::cout<<"newType: "<<TYPE::maleName[newType]<<std::endl;
 			}
 			void printTree();
+			void codeGen();
 	};
 
 	/*
@@ -122,6 +127,7 @@ namespace AST {
 						this->right = newRight;
 					break;
 				}
+				codeGen();
 			}
 			void printTree();
 			void assign(Node *newLeft, OPERATION::Operation op, Node *newRight);
@@ -130,6 +136,7 @@ namespace AST {
 			void comparison(Node *newLeft, OPERATION::Operation op, Node *newRight);
 			void unOperation(Node *newLeft, OPERATION::Operation op, Node *newRight);
 			void coerceToInteger(Node *newLeft, Node *newRight);
+			void codeGen();
 
 	};
 
@@ -149,9 +156,11 @@ namespace AST {
 				// std::cout<<"  Unop:Op: "<< OPERATION::name[this->op] <<std::endl;
 				checkType(newNode->type, newOp);
 				// TYPE::getUnType(node->type, op); 
+				// codeGen();
 			}
 			void checkType(TYPE::Type type, OPERATION::Operation op);
 			void printTree();
+			// void codeGen();
 	};
 
 	/*
@@ -166,8 +175,9 @@ namespace AST {
 			KIND::Kind kind;
 			std::string lengh;
 			Word(std::string word, TYPE::Type newType, KIND::Kind newKind, std::string newLengh) 
-				: word(word), type(newType), kind(newKind), Node(newType), lengh(newLengh) { }
+				: word(word), type(newType), kind(newKind), Node(newType), lengh(newLengh) { codeGen(); }
 			void printTree();
+			void codeGen();
 	};
 
 	/*
@@ -183,8 +193,10 @@ namespace AST {
 	 		VariableDeclaration (TYPE::Type type) : type(type), Node(type){
 	 			// std::cout<< "declaravar" <<std::endl;
 	 			// std::cout<< "tipo "<< type <<std::endl;
+	 			codeGen();
 	 		}
 	 		void printTree();
+	 		void codeGen();
 	 };
 
 	 /*
@@ -198,8 +210,9 @@ namespace AST {
 	 		std::string size;
 	 		TYPE::Type type;
 	 		NodeList variables;
-	 		ArrayDeclaration (TYPE::Type type, std::string size) : type(type), size(size), Node(type) { }
+	 		ArrayDeclaration (TYPE::Type type, std::string size) : type(type), size(size), Node(type) { codeGen(); }
 	 		void printTree();
+	 		void codeGen();
 	 };
 
 	 /*
@@ -227,8 +240,9 @@ namespace AST {
 	 		TYPE::Type type;
 	 		NodeList funcs;
 	 		ParamList params;
-	 		FunctionDeclaration (TYPE::Type type) : type(type), Node(type) { }
+	 		FunctionDeclaration (TYPE::Type type) : type(type), Node(type) { codeGen(); }
 	 		void printTree();
+	 		void codeGen();
 	 };
 
 	 /*
@@ -260,8 +274,9 @@ namespace AST {
 	 		ParamList params;
 
 	 		Node *signature;
-	 		FunctionDefinition (TYPE::Type type/*, Node *signature*/) : type(type), Node(type)/*, signature(signature)*/ { }
+	 		FunctionDefinition (TYPE::Type type/*, Node *signature*/) : type(type), Node(type)/*, signature(signature)*/ { codeGen(); }
 	 		void printTree();
+	 		void codeGen();
 	 };
 
 	 /*
@@ -290,8 +305,9 @@ namespace AST {
 			NodeList elseLines;
 			Node* condition;
 			bool hasElse = false;
-			IfBlock(Node* condition) : condition(condition) { }
+			IfBlock(Node* condition) : condition(condition) { codeGen(); }
 			void printTree();
+			void codeGen();
 	};
 
 	/*
@@ -304,8 +320,9 @@ namespace AST {
 		public:
 			NodeList lines;
 			Node* condition;
-			WhileBlock(Node* condition) : condition(condition) { }
+			WhileBlock(Node* condition) : condition(condition) { codeGen(); }
 			void printTree();
+			void codeGen();
 	};
 
 	/*
@@ -317,20 +334,6 @@ namespace AST {
 		public:
 			NodeList lines;
 			FunctionBody() { }
-			void printTree();
-	};
-
-	/*
-	 *	@class TypeDef to work with a while structure
-	 *	@attribute NodeList (list of Nodes - componentes), Node*
-	 *	@param Node*
-	 *	@method printTree  @return void
-	 */
-	class TypeDef : public Node {
-		public:
-			NodeList nodes;
-			Node *name;
-			TypeDef(Node *name) : name(name) { }
 			void printTree();
 	};
 
@@ -352,8 +355,10 @@ namespace AST {
 					tilExpr->printTree();
 					std::cout<<" deve ser do tipo "<< TYPE::maleName[TYPE::integer]<< ", mas recebeu "<< TYPE::maleName[tilExpr->type]<< "." <<endl;
 				}
+				codeGen();
 			}
 			void printTree();
+			void codeGen();
 	};
 }
 

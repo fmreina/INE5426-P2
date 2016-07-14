@@ -72,10 +72,5 @@ namespace ST {
 					return parent->getSymbol(id);
 				return nullptr;
 			}
-
-			// MemList allocations;
-			// bool checkMem(std::string id) {return allocations.find(id) != allocations.end();}
-			// llvm::Value* useVariable(std::string id); //Returns the value of a variable
-        	// void updateVariable(std::string id, llvm::Value * value); //Updates the value of a variable
 	};
 }

@@ -46,23 +46,4 @@ $(OBJ)/scanner.o: $(LEX)/scanner.l $(SYN)/parser.y $(INC)/ast.h
 
 clean:
 	rm $(OBJ)/*.o $(SRC)/scanner.cpp $(SRC)/parser.cpp $(INC)/parser.h $(OUTPUT) 
-
-
-# all: flex yacc clang
-
-# clang: *.cpp *.h
-# 	${CC} -o ${OUTPUT} *.cpp ${LLVMPARAM} ${PARAM}
-
-# yacc: parser.y
-# 	${BISON} --defines=parser.h --output=parser.cpp --debug -v parser.y 
-# 	# flag -v or --verbose to generate file.output with a log of the compilation
-
-# flex: scanner.l
-# 	${FLEX} -o scanner.cpp scanner.l 
-
-# clean:
-# 	rm parser.cpp parser.h scanner.cpp ${OUTPUT}
-
-# test: all
-# 	./${OUTPUT} < input_example
-
+	

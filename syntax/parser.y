@@ -170,17 +170,12 @@ startcode : { IR::codeGenSetup(); }
 /*
  *	A line may be a declaration or an assignment
  */ 		
-line :	declaration T_SEMICOLON new_line { $$ = $1; 
-												// for(auto it = symTab.entryList.cbegin(); it != symTab.entryList.cend(); ++it){
-												// 	std::cout << "Gram:line:symbol: " << it->first << " " << TYPE::maleName[it->second.type]<<endl;
-												// }
-											}
+line :	declaration T_SEMICOLON new_line { $$ = $1; }
 		| assignment T_SEMICOLON new_line
 		| line new_line 
 		| scope new_line
 		| funct new_line{ $$ = $1; }
 		| def_func new_line { $$ = $1; }
-		// | expression T_SEMICOLON new_line // only for testing
 		;
 
 new_line: {}
@@ -207,26 +202,17 @@ type :	T_TYPE_INT { TYPE::lastType = TYPE::integer; }
  *	Each list of variable can be a single word { creates a new instance of variableDeclaration and push the variable into the variable list}
  *	or a list of variables followed by a word { receives a new list and a variable, and push the the variable into the list }
  */
-variable_list:	T_WORD { 
-						 // cout<<"  Gram:variable_list:lastType "<<TYPE::maleName[TYPE::lastType]<<endl;
-						 $$ = new AST::VariableDeclaration(TYPE::lastType);
-						 // cout<<"  Gram:variable_list:lastType "<<TYPE::maleName[TYPE::lastType]<<endl;
+variable_list:	T_WORD { $$ = new AST::VariableDeclaration(TYPE::lastType);
 						 $$->variables.push_back(symTab.newVariable($1, TYPE::lastType, KIND::variable, "0"));
 						}
 				| variable_list T_COMMA T_WORD { $$ = $1;
-												 // cout<<"  parse:variable_list:lastType "<<TYPE::maleName[TYPE::lastType]<<endl;
-												 $$->variables.push_back(symTab.newVariable($3, TYPE::lastType, KIND::variable, "0")); }
+												  $$->variables.push_back(symTab.newVariable($3, TYPE::lastType, KIND::variable, "0")); }
 				;
 
 /*
  *	creates a relation and assign a expression to a variable coming from target
  */
-assignment: target T_ASSIGN expression { 
-										// $1->printTree();
-										// std::cout<<"\n  Gram:Assignment: "<< TYPE::maleName[$1->type] <<std::endl;
-										// $3->printTree();
-										// std::cout<<"\n  Gram:Assignment: "<< TYPE::maleName[$3->type] <<std::endl;
-										$$ = new AST::BinOp($1, OPERATION::assign, $3->coerce($1)); }
+assignment: target T_ASSIGN expression { $$ = new AST::BinOp($1, OPERATION::assign, $3->coerce($1)); }
 			| target_array T_ASSIGN expression { $$ = new AST::BinOp($1, OPERATION::assign, $3->coerce($1)); }
 			;
 
@@ -299,28 +285,9 @@ scope: /*while_scope{ $$ = $1; }*/
 	 | from_scope { $$ = $1; }
 	 ;
 
-new_scope: { symTab = new ST::SymbolTable(symTab);
-			// cout<<"Created new table: "<<endl;
-			// for(auto it = symTab.entryList.cbegin(); it != symTab.entryList.cend(); ++it){
-			// 	std::cout << "\t" << it->first << " " << it->second.type<<endl;
-			// }
-			// cout<<"\n it's parent table: "<<endl;
-			// for(auto it = symTab.parent->entryList.cbegin(); it != symTab.parent->entryList.cend(); ++it){
-			// 	std::cout << "\t" << it->first << " " << it->second.type<<endl;
-			// }
-		};
+new_scope: { symTab = new ST::SymbolTable(symTab); };
 
-end_scope: { if(symTab.parent != nullptr) symTab = symTab.parent;
-			// cout<< "endScope" <<endl;
-			// std::cout << "RestoredList: "<<endl; 
-			// for(auto it = symTab.entryList.cbegin(); it != symTab.entryList.cend(); ++it){
-			// 	std::cout << "\t" << it->first << " " << it->second.type<<endl;
-			// }
-			// cout<<"\n it's parent table: "<<endl;
-			// for(auto it = symTab.parent->entryList.cbegin(); it != symTab.parent->entryList.cend(); ++it){
-			// 	std::cout << "\t" << it->first << " " << it->second.type<<endl;
-			// }
-			};
+end_scope: { if(symTab.parent != nullptr) symTab = symTab.parent; };
 
 /*
  *	declaration of while scope (loop)

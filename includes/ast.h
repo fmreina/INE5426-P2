@@ -47,7 +47,6 @@ namespace AST {
 			bool isDef = false;
 			bool isComplex = false;
 			bool error = false;
-			// ParamList params;
 			NodeList paramList;
 			KIND::Kind kind;
 			llvm::Value* code;
@@ -78,9 +77,6 @@ namespace AST {
 			TYPE::Type type;
 			Value(std::string value, TYPE::Type newType) : value(value), type(newType), Node(newType) { 
 				codeGen();
-				// std::cout<<"value: "<<value<<std::endl;
-				// std::cout<<"type: "<<TYPE::maleName[this->type]<<std::endl;
-				// std::cout<<"newType: "<<TYPE::maleName[newType]<<std::endl;
 			}
 			void printTree();
 			void codeGen();
@@ -97,7 +93,6 @@ namespace AST {
 			Node *left;
 			Node *right;
 			BinOp(Node *newLeft, OPERATION::Operation op, Node *newRight) {
-				// std::cout<<"op "<< OPERATION::name[op]<<std::endl;
 				switch(op){
 					case OPERATION::assign:
 						assign(newLeft, op, newRight);
@@ -151,11 +146,7 @@ namespace AST {
 			Node *node;
 			TYPE::Type type;
 			UnOp(OPERATION::Operation newOp, Node* newNode) : node(newNode), op(newOp), type(newNode->type) {
-				// std::cout<<"  Unop:Type: "<< TYPE::maleName[this->type] <<std::endl;
-				// std::cout<<"  UnOp:NodeType: "<< TYPE::maleName[this->node->type] <<std::endl;
-				// std::cout<<"  Unop:Op: "<< OPERATION::name[this->op] <<std::endl;
 				checkType(newNode->type, newOp);
-				// TYPE::getUnType(node->type, op); 
 				// codeGen();
 			}
 			void checkType(TYPE::Type type, OPERATION::Operation op);
@@ -191,8 +182,6 @@ namespace AST {
 	 		TYPE::Type type;
 	 		NodeList variables;
 	 		VariableDeclaration (TYPE::Type type) : type(type), Node(type){
-	 			// std::cout<< "declaravar" <<std::endl;
-	 			// std::cout<< "tipo "<< type <<std::endl;
 	 			codeGen();
 	 		}
 	 		void printTree();
@@ -274,7 +263,7 @@ namespace AST {
 	 		ParamList params;
 
 	 		Node *signature;
-	 		FunctionDefinition (TYPE::Type type/*, Node *signature*/) : type(type), Node(type)/*, signature(signature)*/ { codeGen(); }
+	 		FunctionDefinition (TYPE::Type type) : type(type), Node(type) { codeGen(); }
 	 		void printTree();
 	 		void codeGen();
 	 };

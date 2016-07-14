@@ -60,9 +60,6 @@ void BinOp::printTree(){
 				right->size->printTree();
 				std::cout << "}: ";
 			}
-			// if(left->type == TYPE::integer || right->type == TYPE::real){
-			// 	std::cout<<" para inteiro"<<std::endl; // FIXME: make as in the coercion from int to real
-			// }
 			break;
 		default:
 			std::cout << "(";
@@ -142,34 +139,24 @@ void BinOp::assign(Node *newLeft, OPERATION::Operation op, Node *newRight){
 	/*
 	 * if left type is the same as right type, ok!
 	 */
-	 // newLeft->printTree();
-	 // cout<<"\n tipo "<< newLeft->type<<endl;
-
 	 auto arr = dynamic_cast<AST::Word *>(newLeft);
 	if(arr->kind == KIND::array){
 		auto position = dynamic_cast<Value*>(arr->size);
 		if(position){
-			// cout<<"Position: "<< position->value <<endl;	
-			// cout<<"Lengh: "<< arr->lengh <<endl;
 			int pos = std::stoi(position->value);
 			int lengh = std::stoi(arr->lengh);
-			// cout<<"Position: "<< pos <<endl;	
-			// cout<<"Lengh: "<< lengh <<endl;
 			if(pos <= lengh-1){
 				BinOp::validateAndAssign(newLeft, op, newRight);
 			} else {
 				//FIXME: how to avoid segmentation fault if do not set the values?
 				//index out of bounds
-				// std::cout<<"ERROR: Index out of bounds." << std::endl;
 				// MESSAGES::indexOutOfBounds(pos, lengh-1);
 				MESS::indexOutOfBounds(pos, lengh-1);
 				this->left = newLeft;
 				this->op = op;
-				// this->right = new Value("0", newRight->type);
 				this->right = newRight;
 			}
 		} else {
-			// std::cout<<"ERROR at ast.cpp on method BinOp::assign. Cannot cast to Value*." << std::endl;
 			// TODO: send the value when doing SymbolTable::assignVariable and get it back here to set as index of the array
 			// auto word = dynamic_cast<Word*>(arr->size);
 			// auto symbol = symTab.entryList[word->word];
@@ -249,7 +236,6 @@ void UnOp::printTree(){
 	switch(op){
 		case OPERATION::parenthesis:
 			std::cout << "(abre parenteses) ";
-            // node->printTree();
 			// check if it's an array or not
             if(node->size == NULL){
 				node->printTree();
@@ -271,7 +257,6 @@ void UnOp::printTree(){
 			} else{
 				std::cout<< TYPE::femaleName[type] << ") ";	
 			}
-			// node->printTree();
 			// check if it's an array or not
             if(node->size == NULL){
 				node->printTree();
@@ -289,7 +274,6 @@ void UnOp::printTree(){
 }
 
 void UnOp::checkType(TYPE::Type type, OPERATION::Operation op){
-	// std::cout<<"\n  Unop:checkType:Type: "<< TYPE::maleName[type] <<std::endl;
 	switch(op){
 		case OPERATION::u_minus:
 			if(type != TYPE::integer && type != TYPE::real){ 
@@ -357,13 +341,6 @@ void VariableDeclaration::printTree(){
  *	Method to make the coercion from integer to real when needed
  */
 Node* Node::coerce(Node* left){
- 	// "this" is the right side
- 	// std::cout<<"this "<<TYPE::maleName[this->type]<<std::endl;
- 	// this->printTree();
- 	// std::cout<<std::endl;
- 	// std::cout<<"node "<<TYPE::maleName[left->type]<<std::endl;
- 	// left->printTree();
- 	// std::cout<<std::endl;
  	if(this->needCoersion(this->type, left->type)){
  		this->type = TYPE::real;
  		return new AST::Coercion(this);
@@ -425,7 +402,6 @@ bool Node::needCoersion(TYPE::Type right, TYPE::Type left){
  	}
  	std::cout << "\n+parametros:"<<endl;
  	for( auto var = params.begin(); var != params.end(); var ++){
- 		// std::cout << "parametro ";
  		(*var)->isParam = true;
  		(*var)->printTree();
  		(*var)->isParam = false;
@@ -448,7 +424,6 @@ bool Node::needCoersion(TYPE::Type right, TYPE::Type left){
  */
  void FunctionDefinition::printTree(){
  	std::cout << "Definicão de funcão " << TYPE::femaleName[type] << ": ";
- 	// signature->printTree();
  	for( auto var = funcs.begin(); var != funcs.end(); var ++){
  		std::cout << dynamic_cast<Word *>(*var)->word;
  		if(next(var) != funcs.end())
@@ -456,7 +431,6 @@ bool Node::needCoersion(TYPE::Type right, TYPE::Type left){
  	}
  	std::cout << "\n+parametros:"<<endl;
  	for( auto var = params.begin(); var != params.end(); var ++){
- 		// std::cout << "parametro ";
  		(*var)->isParam = true;
  		(*var)->printTree();
  		(*var)->isParam = false;
@@ -467,7 +441,6 @@ bool Node::needCoersion(TYPE::Type right, TYPE::Type left){
 
  	std::cout << "\n+corpo:"<<endl;
  	for( auto var = lines.begin(); var != lines.end(); var ++){
- 		// std::cout << dynamic_cast<Word *>(*var)->word;
  		(*var)->printTree();
  		if(next(var) != lines.end())
  			std::cout << ", ";

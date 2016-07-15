@@ -1,5 +1,9 @@
 int a;
 a = 2;
 enquanto (a < 9) {
+	real b;
+	b = 5.6;
 	a = a + 1;
 }
+a = 8;
+b = 7.4;

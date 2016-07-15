@@ -10,11 +10,12 @@
 #include <iostream>
 #include <vector>
 #include "staff.h"
+#include "llvm-utils.h" /*LLVM-related code*/
 
+extern void yyerror(const char* s, ...);
 
 using namespace std;
 
-extern void yyerrer(const char *s, ...);
 namespace AST {
 
 	class Node;
@@ -46,9 +47,9 @@ namespace AST {
 			bool isDef = false;
 			bool isComplex = false;
 			bool error = false;
-			// ParamList params;
 			NodeList paramList;
 			KIND::Kind kind;
+			llvm::Value* code;
 	};
 
 	/*
@@ -62,6 +63,7 @@ namespace AST {
 			NodeList lines;
 			Block() { }
 			void printTree();
+			void codeGen();
 	};
 
 	/*
@@ -74,11 +76,10 @@ namespace AST {
 			std::string value;
 			TYPE::Type type;
 			Value(std::string value, TYPE::Type newType) : value(value), type(newType), Node(newType) { 
-				// std::cout<<"value: "<<value<<std::endl;
-				// std::cout<<"type: "<<TYPE::maleName[this->type]<<std::endl;
-				// std::cout<<"newType: "<<TYPE::maleName[newType]<<std::endl;
+				codeGen();
 			}
 			void printTree();
+			void codeGen();
 	};
 
 	/*
@@ -92,7 +93,6 @@ namespace AST {
 			Node *left;
 			Node *right;
 			BinOp(Node *newLeft, OPERATION::Operation op, Node *newRight) {
-				// std::cout<<"op "<< OPERATION::name[op]<<std::endl;
 				switch(op){
 					case OPERATION::assign:
 						assign(newLeft, op, newRight);
@@ -122,6 +122,7 @@ namespace AST {
 						this->right = newRight;
 					break;
 				}
+				codeGen();
 			}
 			void printTree();
 			void assign(Node *newLeft, OPERATION::Operation op, Node *newRight);
@@ -130,6 +131,7 @@ namespace AST {
 			void comparison(Node *newLeft, OPERATION::Operation op, Node *newRight);
 			void unOperation(Node *newLeft, OPERATION::Operation op, Node *newRight);
 			void coerceToInteger(Node *newLeft, Node *newRight);
+			void codeGen();
 
 	};
 
@@ -144,14 +146,12 @@ namespace AST {
 			Node *node;
 			TYPE::Type type;
 			UnOp(OPERATION::Operation newOp, Node* newNode) : node(newNode), op(newOp), type(newNode->type) {
-				// std::cout<<"  Unop:Type: "<< TYPE::maleName[this->type] <<std::endl;
-				// std::cout<<"  UnOp:NodeType: "<< TYPE::maleName[this->node->type] <<std::endl;
-				// std::cout<<"  Unop:Op: "<< OPERATION::name[this->op] <<std::endl;
 				checkType(newNode->type, newOp);
-				// TYPE::getUnType(node->type, op); 
+				// codeGen();
 			}
 			void checkType(TYPE::Type type, OPERATION::Operation op);
 			void printTree();
+			// void codeGen();
 	};
 
 	/*
@@ -166,8 +166,9 @@ namespace AST {
 			KIND::Kind kind;
 			std::string lengh;
 			Word(std::string word, TYPE::Type newType, KIND::Kind newKind, std::string newLengh) 
-				: word(word), type(newType), kind(newKind), Node(newType), lengh(newLengh) { }
+				: word(word), type(newType), kind(newKind), Node(newType), lengh(newLengh) { codeGen(); }
 			void printTree();
+			void codeGen();
 	};
 
 	/*
@@ -181,10 +182,10 @@ namespace AST {
 	 		TYPE::Type type;
 	 		NodeList variables;
 	 		VariableDeclaration (TYPE::Type type) : type(type), Node(type){
-	 			// std::cout<< "declaravar" <<std::endl;
-	 			// std::cout<< "tipo "<< type <<std::endl;
+	 			codeGen();
 	 		}
 	 		void printTree();
+	 		void codeGen();
 	 };
 
 	 /*
@@ -198,8 +199,9 @@ namespace AST {
 	 		std::string size;
 	 		TYPE::Type type;
 	 		NodeList variables;
-	 		ArrayDeclaration (TYPE::Type type, std::string size) : type(type), size(size), Node(type) { }
+	 		ArrayDeclaration (TYPE::Type type, std::string size) : type(type), size(size), Node(type) { codeGen(); }
 	 		void printTree();
+	 		void codeGen();
 	 };
 
 	 /*
@@ -227,8 +229,9 @@ namespace AST {
 	 		TYPE::Type type;
 	 		NodeList funcs;
 	 		ParamList params;
-	 		FunctionDeclaration (TYPE::Type type) : type(type), Node(type) { }
+	 		FunctionDeclaration (TYPE::Type type) : type(type), Node(type) { codeGen(); }
 	 		void printTree();
+	 		void codeGen();
 	 };
 
 	 /*
@@ -260,8 +263,9 @@ namespace AST {
 	 		ParamList params;
 
 	 		Node *signature;
-	 		FunctionDefinition (TYPE::Type type/*, Node *signature*/) : type(type), Node(type)/*, signature(signature)*/ { }
+	 		FunctionDefinition (TYPE::Type type) : type(type), Node(type) { codeGen(); }
 	 		void printTree();
+	 		void codeGen();
 	 };
 
 	 /*
@@ -290,8 +294,9 @@ namespace AST {
 			NodeList elseLines;
 			Node* condition;
 			bool hasElse = false;
-			IfBlock(Node* condition) : condition(condition) { }
+			IfBlock(Node* condition) : condition(condition) { codeGen(); }
 			void printTree();
+			void codeGen();
 	};
 
 	/*
@@ -304,8 +309,9 @@ namespace AST {
 		public:
 			NodeList lines;
 			Node* condition;
-			WhileBlock(Node* condition) : condition(condition) { }
+			WhileBlock(Node* condition) : condition(condition) { codeGen(); }
 			void printTree();
+			void codeGen();
 	};
 
 	/*
@@ -317,20 +323,6 @@ namespace AST {
 		public:
 			NodeList lines;
 			FunctionBody() { }
-			void printTree();
-	};
-
-	/*
-	 *	@class TypeDef to work with a while structure
-	 *	@attribute NodeList (list of Nodes - componentes), Node*
-	 *	@param Node*
-	 *	@method printTree  @return void
-	 */
-	class TypeDef : public Node {
-		public:
-			NodeList nodes;
-			Node *name;
-			TypeDef(Node *name) : name(name) { }
 			void printTree();
 	};
 
@@ -352,8 +344,41 @@ namespace AST {
 					tilExpr->printTree();
 					std::cout<<" deve ser do tipo "<< TYPE::maleName[TYPE::integer]<< ", mas recebeu "<< TYPE::maleName[tilExpr->type]<< "." <<endl;
 				}
+				codeGen();
 			}
 			void printTree();
+			void codeGen();
+	};
+
+	class MESS{
+	public:
+		static void wrongTypeError(OPERATION::Operation op, TYPE::Type expected, TYPE::Type given){
+		yyerror("\n - semântico: operacão %s espera %s mas recebeu %s.\n", OPERATION::name[op].c_str(), TYPE::maleName[expected].c_str(), TYPE::maleName[given].c_str());
+		}
+
+		static void wrongTypeError(OPERATION::Operation op, TYPE::Type expected1, TYPE::Type expected2, TYPE::Type given){
+			yyerror("\n - semântico: operacão %s espera %s ou %s mas recebeu %s.\n", OPERATION::name[op].c_str(), TYPE::maleName[expected1].c_str(), TYPE::maleName[expected2].c_str(), TYPE::maleName[given].c_str());
+		}
+
+		static void assignValueMessage(AST::Node* left, AST::Node* right){
+			std::cout<<  " Ação: Foi atribuido o ";
+			right->printTree();
+			std::cout<<  " à ";
+			left->printTree(); 
+			std::cout<<"."<<std::endl;
+		}
+
+		static void assignIntegerPartMessage(AST::Node* left, AST::Node* right){
+			std::cout<<  " Ação: Foi atribuido a parte inteira de ";
+			right->printTree();
+			std::cout<<  " à ";
+			left->printTree(); 
+			std::cout<<"."<<std::endl;
+		}
+
+		static void indexOutOfBounds(int position, int lengh){
+			yyerror("\n - Posicão válida. tentou acessar %d, mas o tamanho do array é %d.\n", position, lengh);
+		}
 	};
 }
 

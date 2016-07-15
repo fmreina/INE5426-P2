@@ -10,6 +10,7 @@
 #include <map>
 #include "ast.h"
 #include "staff.h"
+ #include "llvm-utils.h" /* For variable instructions and code generation */
 
 extern void yyerror(const char* s, ...);
 
@@ -17,6 +18,7 @@ namespace ST {
 	class Symbol;
 
 	typedef std::map<std::string, Symbol> SymbolList; // set of symbols
+	typedef std::map<std::string, llvm::Value*> MemList; //Set of Variables in the code. We would like to have memory allocations here, but this will suffice for the time being
 
 	/*
 	 *	@class Symbol to define a symbol 

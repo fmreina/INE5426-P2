@@ -6,7 +6,7 @@ using namespace IR;
 
 void IR::codeGenSetup(){
     //Starts module
-    OurModule = new Module("Our first intermediary code compiler", Context);
+    OurModule = new Module("Compilador de código intermediário", Context);
     //Set up 'main'
     /* http://llvm.org/docs/doxygen/html/classllvm_1_1FunctionType.html
      * static FunctionType * get (Type *Result, bool isVarArg)
@@ -35,7 +35,7 @@ void IR::codeGenSetup(){
 void IR::codeGenEnd(Value* endvalue){
     Builder.CreateRet(endvalue);
     verifyFunction(*ourMain);//Checks if everything is okay with our function
-    std::cout << "####################\n";
+    std::cout << "\n####################\n";
     /*** Lets print the intermediary representation generated ***/
     OurModule->dump();
     std::cout << "####################\n";

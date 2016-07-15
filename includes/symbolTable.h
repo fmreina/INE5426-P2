@@ -72,5 +72,8 @@ namespace ST {
 					return parent->getSymbol(id);
 				return nullptr;
 			}
+
+			MemList allocations;
+			
 	};
 }

@@ -20,6 +20,8 @@ AST::Node* SymbolTable::newVariable( std::string id, TYPE::Type type, KIND::Kind
 	else {
 		Symbol entry(type, kind, lengh, false); 
 		addSymbol( id, entry );
+
+		allocations[id] = IR::Zero;
 	}
 
 	AST::Node* node = new AST::Word( id, type, kind, lengh );

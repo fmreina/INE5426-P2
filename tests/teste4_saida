@@ -1,7 +1,13 @@
+Line 9: error: Variável ainda não foi definida! b
+Segmentation fault
+
 Declaracão de variável inteira: a
 Atribuicão de valor para variável a: valor inteiro 2
 Laco
-+enquanto: (variável a (menor desconhecido) valor inteiro 9)
++enquanto: (variável a (menor booleano) valor inteiro 9)
 +faca: 
+Declaracão de variável real: b
+Atribuicão de valor para variável b: valor real 5.6
 Atribuicão de valor para variável a: (variável a (soma inteira) valor inteiro 1)
 Fim laco
+Atribuicão de valor para variável a: valor inteiro 8

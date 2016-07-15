@@ -149,9 +149,9 @@
  *	A program is made of many lines (blocks) 
  */
 program : startcode block { programRoot = $2;
-							if($2->lines.back()->code != NULL){
+							// if($2->lines.back()->code != NULL){
 								IR::codeGenEnd($2->lines.back()->code);	
-							} 
+							// } 
 						 }
  		;
  	

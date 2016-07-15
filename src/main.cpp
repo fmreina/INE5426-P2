@@ -14,6 +14,7 @@ extern int yyparse();
 int main (int argc, char **argv){
 	// yydebug = 0;
 	yyparse();					// parses the data
+	std::cout << "\n\t..::Saída da linguagem::.." << std::endl;
 	programRoot->printTree();	// prints the AST
 	return 0;
 }

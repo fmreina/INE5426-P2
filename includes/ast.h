@@ -41,6 +41,7 @@ namespace AST {
 			Node (TYPE::Type type) : type(type) { }
 			Node () { }
 			virtual void printTree() { }
+			virtual void codeGen() = 0;
 			Node* coerce(Node* node);
 			bool needCoersion(TYPE::Type a, TYPE::Type b);
 			bool isParam = false;
@@ -151,7 +152,7 @@ namespace AST {
 			}
 			void checkType(TYPE::Type type, OPERATION::Operation op);
 			void printTree();
-			// void codeGen();
+			void codeGen();
 	};
 
 	/*
@@ -216,6 +217,7 @@ namespace AST {
 	 		Node* node;
 	 		Coercion(Node* node) : node(node), Node(TYPE::real) { }
 	 		void printTree();
+	 		void codeGen();
 	 };
 
 	 /*
@@ -247,6 +249,7 @@ namespace AST {
 	 		
 	 		Param (TYPE::Type type) : type(type), Node(type) { }
 	 		void printTree();
+	 		void codeGen();
 	 };
 
 	 /*

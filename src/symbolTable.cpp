@@ -104,3 +104,20 @@ AST::Node* SymbolTable::useVariable( std::string id ){
 	}
 	return 0;
 }
+
+llvm::Value* SymbolTable::useVariableLLVM (std::string id){
+    if (! checkId(id) ) { //Variable never declared
+        std::cout << "Variable not declared: " << id.c_str() << std::endl;
+        return NULL;
+    } else {
+        return allocations[id]; //Gets its value
+    }
+}
+
+void SymbolTable::updateVariable (std::string id, llvm::Value * value){
+    if (! checkId(id) ) { //Variable never declared
+        std::cout << "Variable not declared: " << id.c_str() << std::endl;
+    } else {
+        allocations[id] = value; //Updates its value
+    }
+}

@@ -74,6 +74,8 @@ namespace ST {
 			}
 
 			MemList allocations;
-			
+			llvm::Value* useVariableLLVM(std::string id); //Returns the value of a variable
+			bool checkMem(std::string id) {return allocations.find(id) != allocations.end();}
+			void updateVariable(std::string id, llvm::Value * value); //Updates the value of a variable
 	};
 }
